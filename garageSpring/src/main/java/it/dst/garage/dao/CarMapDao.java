@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import it.dst.garage.model.Car;
 
 public class CarMapDao implements CarDao {
@@ -52,4 +51,7 @@ public class CarMapDao implements CarDao {
         return cars.containsKey(id);
     }
 
+    protected Map<String, Car> getCars() {
+        return cars;
+    }
 }

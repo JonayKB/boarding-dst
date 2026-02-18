@@ -7,52 +7,52 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import it.dst.garage.model.Car;
 
-public class CarArrayDaoTest {
+public class CarMapDaoTest {
     private static final String TEST_PLATE = "TEST_PLATE";
     private static final int TEST_YEAR = 2020;
     private static final String TEST_MODEL = "TEST_MODEL";
     private static final String TEST_BRAND = "TEST_BRAND";
     private static final String TEST_ID = "TEST_ID";
-    private CarArrayDao carArrayDao;
+    private CarMapDao carMapDao;
 
     @BeforeEach
     public void beforeEach() {
-        carArrayDao = new CarArrayDao();
+        carMapDao = new CarMapDao();
     }
 
     @Test
     protected void test_findAll_is_empty() {
-        assertEquals(carArrayDao.findAll(), new ArrayList<Car>(), "Initial list should be empty");
+        assertEquals(carMapDao.findAll(), new ArrayList<Car>(), "Initial list should be empty");
     }
 
     @Test
     protected void test_findById_is_null() {
-        assertEquals(carArrayDao.findById(anyString()), null, "Should return because that item is not in db");
+        assertEquals(carMapDao.findById(anyString()), null, "Should return because that item is not in db");
     }
 
     @Test
     protected void test_delete_not_exists() {
-        assertFalse(carArrayDao.delete(anyString()), "Should return false");
+        assertFalse(carMapDao.delete(anyString()), "Should return false");
     }
 
     @Test
     protected void test_existById_not_exists() {
-        assertFalse(carArrayDao.existsById(anyString()), "Should return false");
+        assertFalse(carMapDao.existsById(anyString()), "Should return false");
     }
 
     @Test
     protected void test_findById_success() {
-        List<Car> cars = carArrayDao.getCars();
-        cars.add(new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE));
+        Map<String, Car> cars = carMapDao.getCars();
+        cars.put(TEST_ID, new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE));
 
-        Car car = carArrayDao.findById(TEST_ID);
+        Car car = carMapDao.findById(TEST_ID);
 
         assertNotNull(car);
         assertEquals(car.getId(), TEST_ID);
@@ -64,11 +64,11 @@ public class CarArrayDaoTest {
 
     @Test
     protected void test_update_success() {
-        List<Car> cars = carArrayDao.getCars();
-        cars.add(new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE));
+        Map<String, Car> cars = carMapDao.getCars();
+        cars.put(TEST_ID, new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE));
         Car carUpdate = new Car(TEST_ID, "BRAND_UPDATE", "MODEL_UPDATE", 2023, "PLATE_UPDATE");
-        assertTrue(carArrayDao.update(carUpdate));
-        Car carUpdateResult = cars.get(0);
+        assertTrue(carMapDao.update(carUpdate));
+        Car carUpdateResult = cars.get(TEST_ID);
         assertEquals(carUpdate, carUpdateResult);
         assertEquals(carUpdate.getId(), carUpdateResult.getId());
         assertEquals(carUpdate.getBrand(), carUpdateResult.getBrand());
@@ -80,15 +80,15 @@ public class CarArrayDaoTest {
 
     @Test
     protected void test_update_not_exists() {
-        assertFalse(carArrayDao.update(new Car()));
+        assertFalse(carMapDao.update(new Car()));
     }
 
     @Test
     protected void test_save_success() {
-        List<Car> cars = carArrayDao.getCars();
+        Map<String, Car> cars = carMapDao.getCars();
         Car carSave = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        assertTrue(carArrayDao.save(carSave));
-        Car carSaveResult = cars.get(0);
+        assertTrue(carMapDao.save(carSave));
+        Car carSaveResult = cars.get(TEST_ID);
         assertEquals(carSave, carSaveResult);
         assertEquals(carSave.getId(), carSaveResult.getId());
         assertEquals(carSave.getBrand(), carSaveResult.getBrand());
@@ -99,19 +99,27 @@ public class CarArrayDaoTest {
 
     @Test
     protected void test_delete_success() {
-        List<Car> cars = carArrayDao.getCars();
+        Map<String, Car> cars = carMapDao.getCars();
         Car carDelete = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        cars.add(carDelete);
-        assertTrue(carArrayDao.delete(carDelete.getId()));
+        cars.put(TEST_ID, carDelete);
+        assertTrue(carMapDao.delete(carDelete.getId()));
         assertEquals(cars.size(), 0);
     }
 
     @Test
     protected void test_existById_success() {
-        List<Car> cars = carArrayDao.getCars();
+        Map<String, Car> cars = carMapDao.getCars();
         Car carExistsById = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        cars.add(carExistsById);
-        assertTrue(carArrayDao.existsById(carExistsById.getId()));
+        cars.put(TEST_ID, carExistsById);
+        assertTrue(carMapDao.existsById(carExistsById.getId()));
+    }
+
+    @Test
+    protected void test_save_error_exists() {
+        Map<String, Car> cars = carMapDao.getCars();
+        Car carSave = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
+        cars.put(TEST_ID, carSave);
+        assertFalse(carMapDao.save(carSave));
     }
 
 }

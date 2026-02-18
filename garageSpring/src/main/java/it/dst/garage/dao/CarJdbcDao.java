@@ -16,36 +16,36 @@ import it.dst.garage.utils.BeanUtil;
 public class CarJdbcDao implements CarDao {
 
     private static final String FIND_BY_ID_STATEMENT = """
-            SELECT * FROM CARS
-            WHERE id=?
+            SELECT * FROM "CARS"
+            WHERE "id"=?
             """;
 
     private static final String EXISTS_BY_ID_STATEMENT = """
             SELECT EXISTS(
             SELECT 1
-            FROM CARS
-            WHERE id=?);
+            FROM "CARS"
+            WHERE "id"=?);
                         """;
     private static final String FIND_ALL_STATEMENT = """
-            SELECT * FROM CARS
+            SELECT * FROM "CARS"
             """;
     private static final String SAVE_STATEMENT = """
-            INSERT INTO CARS
+            INSERT INTO "CARS"
             (id,brand,model,year,plate)
             VALUES
             (?,?,?,?,?)
             """;
     private static final String UPDATE_STATEMENT = """
-            UPDATE CARS
+            UPDATE "CARS"
             SET
-            brand = ?, model = ?, year = ?, plate = ?
-            WHERE id = ?
+            "brand" = ?, "model" = ?, "year" = ?, "plate" = ?
+            WHERE "id" = ?
             """;
     private static final String DELETE_STATEMENT = """
             DELETE
-            FROM CARS
+            FROM "CARS"
             WHERE
-            id=?
+            "id"=?
             """;
 
     private Connection connection;
@@ -56,7 +56,7 @@ public class CarJdbcDao implements CarDao {
 
         this.connection = DriverManager.getConnection("jdbc:" +
                 databaseProperties.getUrl(),
-                databaseProperties.getUrl(),
+                databaseProperties.getUser(),
                 databaseProperties.getPassword());
 
         applyMigrations();
@@ -66,12 +66,12 @@ public class CarJdbcDao implements CarDao {
         if (!tableExists(connection, "CARS")) {
             connection.createStatement()
                     .executeUpdate("""
-                                CREATE TABLE CARS(
-                                id varchar(255) primary key,
-                                brand varchar(64),
-                                model varchar(64),
-                                year int,
-                                plate varchar(16)
+                                CREATE TABLE "CARS"(
+                                "id" varchar(255) primary key,
+                                "brand" varchar(64),
+                                "model" varchar(64),
+                                "year" int,
+                                "plate" varchar(16)
                                 )
                             """);
         }
