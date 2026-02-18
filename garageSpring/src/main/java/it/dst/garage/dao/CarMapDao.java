@@ -4,14 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Repository;
 
 import it.dst.garage.model.Car;
-import it.dst.garage.properties.GarageProperties;
 
-@Repository
-@ConditionalOnProperty(name = GarageProperties.PERSISTANCE_TYPE, havingValue = "map")
 public class CarMapDao implements CarDao {
     Map<String, Car> cars;
 

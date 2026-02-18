@@ -3,14 +3,11 @@ package it.dst.garage.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 import it.dst.garage.model.Car;
-import it.dst.garage.properties.GarageProperties;
 
 @Repository
-@ConditionalOnProperty(name = GarageProperties.PERSISTANCE_TYPE, havingValue = "array")
 public class CarArrayDao implements CarDao {
     private List<Car> cars;
 
