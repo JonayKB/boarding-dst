@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "persistance.type",
+  "type": "java.lang.String",
+  "description": "Selects the dao used to persist"
+}]}
