@@ -1,5 +1,37 @@
-{"properties": [{
-  "name": "persistance.type",
-  "type": "java.lang.String",
-  "description": "Selects the dao used to persist"
-}]}
+{"properties": [
+  {
+    "name": "persistance.type",
+    "type": "java.lang.String",
+    "description": "Selects the dao used to persist"
+  },
+  {
+    "name": "ddbb.driver",
+    "type": "java.lang.String",
+    "description": "Driver to use for connection"
+  },
+  {
+    "name": "ddbb.url",
+    "type": "java.lang.String",
+    "description": "Url to use for connection"
+  },
+  {
+    "name": "ddbb.user",
+    "type": "java.lang.String",
+    "description": "User for the connection"
+  },
+  {
+    "name": "ddbb.password",
+    "type": "java.lang.String",
+    "description": "Passwod for the connection"
+  },
+  {
+    "name": "ddbb.port",
+    "type": "java.lang.Number",
+    "description": "Port used for the connection"
+  },
+  {
+    "name": "ddbb.dd-name",
+    "type": "java.lang.String",
+    "description": "Name of the database"
+  }
+]}

@@ -1,5 +1,7 @@
 package it.dst.garage;
 
+import java.sql.SQLException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,9 @@ public class GarageApplication implements CommandLineRunner {
 		try {
 			carDao = (new CarDaoFactory()).create(persistanceType);
 		} catch (PersistanceTypeException e) {
+			LOG.error(e.getMessage());
+			return;
+		} catch (SQLException e) {
 			LOG.error(e.getMessage());
 			return;
 		}

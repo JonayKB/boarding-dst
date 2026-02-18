@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import it.dst.garage.controller.CarController;
 import it.dst.garage.enums.MainMenuOptions;
+
 @Component
 public class CliCarView implements CarView {
     CarController carController;
@@ -36,15 +37,22 @@ public class CliCarView implements CarView {
             System.out.println("Option should be a number");
             mainMenu();
         }
+
         if (option == options.length - 1) { // Last option always should be exit
             if (scanner != null) {
                 scanner.close();
             }
 
         } else {
-            System.out.println(carController.selectMainMenuOption(options[option], this));
-            
-            mainMenu();
+            if (option > options.length - 1) {
+                System.out.println("There are " + options.length + " options");
+                mainMenu();
+            } else {
+                System.out.println(carController.selectMainMenuOption(options[option], this));
+
+                mainMenu();
+            }
+
         }
 
     }
