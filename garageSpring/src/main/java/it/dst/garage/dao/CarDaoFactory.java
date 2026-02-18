@@ -11,7 +11,7 @@ public class CarDaoFactory {
             case "map":
                 return new CarMapDao();
             case "ddbb":
-                throw new PersistanceTypeException("Persistance type: ddbb is not available yet");
+                return new CarJDBCDao();
             case "array":
                 return new CarArrayDao();
             default:

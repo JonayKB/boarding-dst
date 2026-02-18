@@ -52,4 +52,8 @@ public class CarArrayDao implements CarDao {
     public boolean existsById(String id) {
         return cars.stream().anyMatch(car -> car.getId().equals(id));
     }
+
+    protected List<Car> getCars() {
+        return cars;
+    }
 }
