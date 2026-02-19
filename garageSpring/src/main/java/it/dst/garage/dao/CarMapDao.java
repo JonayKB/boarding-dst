@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import it.dst.garage.model.Car;
 
+@Repository
 public class CarMapDao implements CarDao {
     Map<String, Car> cars;
 

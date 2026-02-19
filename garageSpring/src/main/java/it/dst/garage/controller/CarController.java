@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import it.dst.garage.enums.MainMenuOptions;
@@ -24,6 +25,7 @@ public class CarController {
     private static final String ERROR_PLATE_NOT_VALID = "Plate is not valid, should be like GDP1230";
     private static final String ERROR_PLATE_EMPTY = "The plate should be empty";
     private static final String ERROR_YEAR_NUMBER = "Year should be a number";
+    @Autowired
     private CarService carService;
     private CarView carView;
     String plateRegex = "^[A-Z]{2,3}\\d{4}$";

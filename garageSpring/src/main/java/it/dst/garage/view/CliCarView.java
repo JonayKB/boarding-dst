@@ -14,6 +14,7 @@ public class CliCarView implements CarView {
 
     public CliCarView(CarController carController) {
         this.carController = carController;
+        this.carController.setCarView(this);
         this.scanner = new Scanner(System.in);
     }
 

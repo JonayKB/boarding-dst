@@ -2,17 +2,19 @@ package it.dst.garage.dao;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.dst.garage.model.Car;
-import it.dst.garage.properties.DatabaseProperties;
-import it.dst.garage.utils.BeanUtil;
+import org.springframework.stereotype.Repository;
 
+import it.dst.garage.model.Car;
+import it.dst.garage.utils.BasicConnetionProvider;
+import it.dst.garage.utils.IConnectionProvider;
+
+@Repository
 public class CarJdbcDao implements CarDao {
 
     private static final String FIND_BY_ID_STATEMENT = """
@@ -49,16 +51,12 @@ public class CarJdbcDao implements CarDao {
             """;
 
     private Connection connection;
-    private DatabaseProperties databaseProperties;
+
+    private IConnectionProvider connectionProvider;
 
     public CarJdbcDao() throws SQLException {
-        databaseProperties = BeanUtil.getBean(DatabaseProperties.class);
-
-        this.connection = DriverManager.getConnection("jdbc:" +
-                databaseProperties.getUrl(),
-                databaseProperties.getUser(),
-                databaseProperties.getPassword());
-
+        connectionProvider = new BasicConnetionProvider();
+        this.connection = connectionProvider.getConnection();
         applyMigrations();
     }
 
