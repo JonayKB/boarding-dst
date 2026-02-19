@@ -7,15 +7,15 @@ import org.junit.jupiter.api.Test;
 
 public class CarJdbcDaoTest {
 
-    private CarJdbcDao carJdbcDao;
+    // private CarJdbcDao carJdbcDao;
 
-    @BeforeEach
-    void beforeEach() throws SQLException {
-        carJdbcDao = new CarJdbcDao();
-    }
+    // @BeforeEach
+    // void beforeEach() throws SQLException {
+    //     carJdbcDao = new CarJdbcDao();
+    // }
 
-    @Test
-    protected void test_findAll_empty() {
+    // @Test
+    // protected void test_findAll_empty() {
 
-    }
+    // }
 }

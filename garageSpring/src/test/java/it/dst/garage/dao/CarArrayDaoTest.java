@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +33,17 @@ public class CarArrayDaoTest {
 
     @Test
     protected void test_findById_is_null() {
-        assertEquals(carArrayDao.findById(anyString()), null, "Should return because that item is not in db");
+        assertEquals(carArrayDao.findById(""), null, "Should return because that item is not in db");
     }
 
     @Test
     protected void test_delete_not_exists() {
-        assertFalse(carArrayDao.delete(anyString()), "Should return false");
+        assertFalse(carArrayDao.delete(""), "Should return false");
     }
 
     @Test
     protected void test_existById_not_exists() {
-        assertFalse(carArrayDao.existsById(anyString()), "Should return false");
+        assertFalse(carArrayDao.existsById(""), "Should return false");
     }
 
     @Test

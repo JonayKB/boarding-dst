@@ -29,7 +29,6 @@ public class CarServiceTest {
     protected void beforeEach() {
         MockitoAnnotations.openMocks(this);
         carService = new CarService(carDaoMock);
-
     }
 
     @Test
