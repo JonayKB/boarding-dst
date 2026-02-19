@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import it.dst.garage.dao.CarDao;
+import it.dst.garage.dao.CarDaoFactory;
+import it.dst.garage.exceptions.PersistanceTypeException;
 import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.model.Car;
 
@@ -25,10 +28,14 @@ public class CarServiceTest {
     @Mock
     private CarDao carDaoMock;
 
+    @Mock
+    private CarDaoFactory carDaoFactoryMock;
+
     @BeforeEach
-    protected void beforeEach() {
+    protected void beforeEach() throws SQLException, PersistanceTypeException {
         MockitoAnnotations.openMocks(this);
-        carService = new CarService(carDaoMock);
+        when(carDaoFactoryMock.create()).thenReturn(carDaoMock);
+        carService = new CarService(carDaoFactoryMock);
     }
 
     @Test

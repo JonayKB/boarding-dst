@@ -23,7 +23,7 @@ public class CarController {
     private static final String PROMPT_ID = "Write the ID: ";
     private static final String ERROR_YEAR_NOT_NUMBER = "Year date must be previous to actual year";
     private static final String ERROR_PLATE_NOT_VALID = "Plate is not valid, should be like GDP1230";
-    private static final String ERROR_PLATE_EMPTY = "The plate should be empty";
+    private static final String ERROR_PLATE_EMPTY = "The plate should not be empty";
     private static final String ERROR_YEAR_NUMBER = "Year should be a number";
     @Autowired
     private CarService carService;
@@ -66,13 +66,13 @@ public class CarController {
 
     }
 
-    private Car findCarById() {
+    protected Car findCarById() {
         String carId = carView.prompt(PROMPT_ID);
         return carService.findById(carId);
 
     }
 
-    private String saveCar() {
+    protected String saveCar() {
         try {
 
             String id = carView.prompt(PROMPT_ID);
@@ -108,7 +108,7 @@ public class CarController {
 
     }
 
-    private String updateCar() {
+    protected String updateCar() {
         try {
             String id = carView.prompt(PROMPT_ID);
             if (!carService.existsById(id)) {
@@ -137,14 +137,14 @@ public class CarController {
             }
             Car car = new Car(id, brand, model, year, plate);
             return carService.update(car) ? "Car with id:" + car.getId() + " has been updated correctly"
-                    : "You cannot update a car that doesn't exists";
+                    : "Something happend during updating";
         } catch (UnvalidCarException e) {
             return e.getMessage();
         }
 
     }
 
-    private boolean deleteCar() {
+    protected boolean deleteCar() {
         String carId = carView.prompt(PROMPT_ID);
         return carService.delete(carId);
 
