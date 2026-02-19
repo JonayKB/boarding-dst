@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import it.dst.garage.model.Car;
@@ -135,6 +134,7 @@ public class CarJdbcDao implements CarDao {
                 return pstmt.executeUpdate() > 0;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
 

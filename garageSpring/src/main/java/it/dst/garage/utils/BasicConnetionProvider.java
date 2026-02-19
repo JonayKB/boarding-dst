@@ -18,7 +18,9 @@ public class BasicConnetionProvider implements IConnectionProvider {
         String url = prop.getProperty(GarageProperties.DDBB_URL);
         String user = prop.getProperty(GarageProperties.DDBB_USER);
         String password = prop.getProperty(GarageProperties.DDBB_PASSWORD);
-        return DriverManager.getConnection("jdbc:" + url, user, password);
+        Connection connection = DriverManager.getConnection("jdbc:" + url, user, password);
+        connection.setAutoCommit(true);
+        return connection;
     }
 
 }

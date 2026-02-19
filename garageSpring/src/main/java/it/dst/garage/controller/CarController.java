@@ -2,6 +2,7 @@ package it.dst.garage.controller;
 
 import java.time.Year;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,11 +76,11 @@ public class CarController {
 
     protected String saveCar() {
         try {
+            String id;
+            do {
+                id = UUID.randomUUID().toString();
 
-            String id = carView.prompt(PROMPT_ID);
-            if (carProxy.existsById(id)) {
-                throw new UnvalidCarException("A car with the same id already exists");
-            }
+            } while (carProxy.existsById(id));
             String brand = carView.prompt(PROMPT_BRAND);
             String model = carView.prompt(PROMPT_MODEL);
             int year = 0;

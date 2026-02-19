@@ -1,6 +1,5 @@
 package it.dst.garage.model;
 
-
 public class Car{
     private String id;
     private String brand;
