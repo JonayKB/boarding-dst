@@ -48,7 +48,7 @@ public class CliCarView implements CarView {
                 System.out.println("There are " + options.length + " options");
                 mainMenu();
             } else {
-                System.out.println(carController.selectMainMenuOption(options[option], this));
+                System.out.println(carController.selectMainMenuOption(options[option]));
 
                 mainMenu();
             }

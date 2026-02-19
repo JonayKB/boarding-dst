@@ -25,6 +25,7 @@ public class CarController {
     private static final String ERROR_PLATE_EMPTY = "The plate should be empty";
     private static final String ERROR_YEAR_NUMBER = "Year should be a number";
     private CarService carService;
+    private CarView carView;
     String plateRegex = "^[A-Z]{2,3}\\d{4}$";
 
     Pattern pattern = Pattern.compile(plateRegex);
@@ -33,7 +34,7 @@ public class CarController {
         this.carService = carService;
     }
 
-    public String selectMainMenuOption(MainMenuOptions option, CarView carViewInstance) {
+    public String selectMainMenuOption(MainMenuOptions option) {
         switch (option) {
             case SHOW_CARS:
                 List<Car> cars = carService.findAll();
@@ -48,14 +49,14 @@ public class CarController {
                 return str.toString();
             case SHOW_CAR:
 
-                Car car = findCarById(carViewInstance);
+                Car car = findCarById();
                 return car != null ? car.toString() : "This car does not exist";
             case ADD_CAR:
-                return saveCar(carViewInstance);
+                return saveCar();
             case UPDATE_CAR:
-                return updateCar(carViewInstance);
+                return updateCar();
             case REMOVE_CAR:
-                return deleteCar(carViewInstance) ? "Succefuly deleted" : "This car wasn't on our database";
+                return deleteCar() ? "Succefuly deleted" : "This car wasn't on our database";
 
             default:
                 return "This is not a valid option";
@@ -63,31 +64,31 @@ public class CarController {
 
     }
 
-    private Car findCarById(CarView carViewInstance) {
-        String carId = carViewInstance.prompt(PROMPT_ID);
+    private Car findCarById() {
+        String carId = carView.prompt(PROMPT_ID);
         return carService.findById(carId);
 
     }
 
-    private String saveCar(CarView carViewInstance) {
+    private String saveCar() {
         try {
 
-            String id = carViewInstance.prompt(PROMPT_ID);
+            String id = carView.prompt(PROMPT_ID);
             if (carService.existsById(id)) {
                 throw new UnvalidCarException("A car with the same id already exists");
             }
-            String brand = carViewInstance.prompt(PROMPT_BRAND);
-            String model = carViewInstance.prompt(PROMPT_MODEL);
+            String brand = carView.prompt(PROMPT_BRAND);
+            String model = carView.prompt(PROMPT_MODEL);
             int year = 0;
             try {
-                year = Integer.parseInt(carViewInstance.prompt(PROMPT_YEAR));
+                year = Integer.parseInt(carView.prompt(PROMPT_YEAR));
                 if (year > Year.now().getValue()) {
                     throw new UnvalidCarException(ERROR_YEAR_NOT_NUMBER);
                 }
             } catch (NumberFormatException e) {
                 return ERROR_YEAR_NUMBER;
             }
-            String plate = carViewInstance.prompt(PROMPT_PLATE);
+            String plate = carView.prompt(PROMPT_PLATE);
             if (plate == null || plate.isEmpty()) {
                 throw new UnvalidCarException(ERROR_PLATE_EMPTY);
             }
@@ -105,17 +106,17 @@ public class CarController {
 
     }
 
-    private String updateCar(CarView carViewInstance) {
+    private String updateCar() {
         try {
-            String id = carViewInstance.prompt(PROMPT_ID);
+            String id = carView.prompt(PROMPT_ID);
             if (!carService.existsById(id)) {
                 throw new UnvalidCarException("A car with this id does not exists");
             }
-            String brand = carViewInstance.prompt(PROMPT_BRAND);
-            String model = carViewInstance.prompt(PROMPT_MODEL);
+            String brand = carView.prompt(PROMPT_BRAND);
+            String model = carView.prompt(PROMPT_MODEL);
             int year = 0;
             try {
-                year = Integer.parseInt(carViewInstance.prompt(PROMPT_YEAR));
+                year = Integer.parseInt(carView.prompt(PROMPT_YEAR));
                 if (year > Year.now().getValue()) {
                     throw new UnvalidCarException(ERROR_YEAR_NOT_NUMBER);
                 }
@@ -123,7 +124,7 @@ public class CarController {
                 return ERROR_YEAR_NUMBER;
 
             }
-            String plate = carViewInstance.prompt(PROMPT_PLATE);
+            String plate = carView.prompt(PROMPT_PLATE);
             if (plate == null || plate.isEmpty()) {
                 throw new UnvalidCarException(ERROR_PLATE_EMPTY);
             }
@@ -141,9 +142,18 @@ public class CarController {
 
     }
 
-    private boolean deleteCar(CarView carViewInstance) {
-        String carId = carViewInstance.prompt(PROMPT_ID);
+    private boolean deleteCar() {
+        String carId = carView.prompt(PROMPT_ID);
         return carService.delete(carId);
 
     }
+
+    public CarView getCarView() {
+        return carView;
+    }
+
+    public void setCarView(CarView carView) {
+        this.carView = carView;
+    }
+
 }

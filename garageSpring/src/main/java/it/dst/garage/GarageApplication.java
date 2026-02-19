@@ -61,6 +61,8 @@ public class GarageApplication implements CommandLineRunner {
 		CarService carService = new CarService(carDao);
 		CarController carController = new CarController(carService);
 		carView = new CliCarView(carController);
+		carController.setCarView(carView);
+
 		LOG.info("Persistance Type: " + persistanceType);
 		carView.mainMenu();
 	}
