@@ -4,11 +4,13 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.dst.garage.exceptions.PersistanceTypeException;
 import it.dst.garage.properties.GarageProperties;
 import it.dst.garage.service.CarService;
+import it.dst.garage.utils.IConnectionProvider;
 import it.dst.garage.utils.IPropertyReader;
 
 @Service
@@ -16,6 +18,9 @@ public class CarDaoFactory {
     private final static Logger LOG = LoggerFactory.getLogger(CarService.class);
 
     private String persistanceType;
+
+    @Autowired
+    private IConnectionProvider connectionProvider;
 
     public CarDaoFactory() throws PersistanceTypeException {
 
@@ -41,7 +46,7 @@ public class CarDaoFactory {
             case "map":
                 return new CarMapDao();
             case "ddbb":
-                return new CarJdbcDao();
+                return new CarJdbcDao(connectionProvider);
             case "array":
                 return new CarArrayDao();
             default:

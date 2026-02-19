@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import it.dst.garage.model.Car;
-import it.dst.garage.utils.BasicConnetionProvider;
 import it.dst.garage.utils.IConnectionProvider;
 
 @Repository
@@ -49,11 +49,10 @@ public class CarJdbcDao implements CarDao {
             WHERE
             "id"=?
             """;
-
     private IConnectionProvider connectionProvider;
 
-    public CarJdbcDao() throws SQLException {
-        connectionProvider = new BasicConnetionProvider();
+    public CarJdbcDao(IConnectionProvider connectionProvider) throws SQLException {
+        this.connectionProvider = connectionProvider;
         applyMigrations();
     }
 
