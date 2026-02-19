@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import it.dst.garage.enums.MainMenuOptions;
 import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.model.Car;
+import it.dst.garage.proxy.CarProxy;
 import it.dst.garage.service.CarService;
 import it.dst.garage.view.CarView;
 
@@ -26,20 +27,20 @@ public class CarController {
     private static final String ERROR_PLATE_EMPTY = "The plate should not be empty";
     private static final String ERROR_YEAR_NUMBER = "Year should be a number";
     @Autowired
-    private CarService carService;
+    private CarProxy carProxy;
     private CarView carView;
     String plateRegex = "^[A-Z]{2,3}\\d{4}$";
 
     Pattern pattern = Pattern.compile(plateRegex);
 
-    public CarController(CarService carService) {
-        this.carService = carService;
+    public CarController(CarProxy carProxy) {
+        this.carProxy = carProxy;
     }
 
     public String selectMainMenuOption(MainMenuOptions option) {
         switch (option) {
             case SHOW_CARS:
-                List<Car> cars = carService.findAll();
+                List<Car> cars = carProxy.findAll();
                 if (cars.isEmpty()) {
                     return "The list is empty";
                 }
@@ -68,7 +69,7 @@ public class CarController {
 
     protected Car findCarById() {
         String carId = carView.prompt(PROMPT_ID);
-        return carService.findById(carId);
+        return carProxy.findById(carId);
 
     }
 
@@ -76,7 +77,7 @@ public class CarController {
         try {
 
             String id = carView.prompt(PROMPT_ID);
-            if (carService.existsById(id)) {
+            if (carProxy.existsById(id)) {
                 throw new UnvalidCarException("A car with the same id already exists");
             }
             String brand = carView.prompt(PROMPT_BRAND);
@@ -100,7 +101,7 @@ public class CarController {
 
             }
             Car car = new Car(id, brand, model, year, plate);
-            return carService.save(car) ? "Car with id:" + car.getId() + " has been saved correctly"
+            return carProxy.save(car) ? "Car with id:" + car.getId() + " has been saved correctly"
                     : "Something happend during saving";
         } catch (UnvalidCarException e) {
             return e.getMessage();
@@ -111,7 +112,7 @@ public class CarController {
     protected String updateCar() {
         try {
             String id = carView.prompt(PROMPT_ID);
-            if (!carService.existsById(id)) {
+            if (!carProxy.existsById(id)) {
                 throw new UnvalidCarException("A car with this id does not exists");
             }
             String brand = carView.prompt(PROMPT_BRAND);
@@ -136,7 +137,7 @@ public class CarController {
 
             }
             Car car = new Car(id, brand, model, year, plate);
-            return carService.update(car) ? "Car with id:" + car.getId() + " has been updated correctly"
+            return carProxy.update(car) ? "Car with id:" + car.getId() + " has been updated correctly"
                     : "Something happend during updating";
         } catch (UnvalidCarException e) {
             return e.getMessage();
@@ -146,7 +147,7 @@ public class CarController {
 
     protected boolean deleteCar() {
         String carId = carView.prompt(PROMPT_ID);
-        return carService.delete(carId);
+        return carProxy.delete(carId);
 
     }
 

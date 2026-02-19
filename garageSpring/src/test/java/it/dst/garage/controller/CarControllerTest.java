@@ -21,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 import it.dst.garage.enums.MainMenuOptions;
 import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.model.Car;
+import it.dst.garage.proxy.CarProxy;
 import it.dst.garage.service.CarService;
 import it.dst.garage.view.CarView;
 
@@ -39,7 +40,7 @@ public class CarControllerTest {
     private static final String TEST_ID = "TEST_ID";
 
     @Mock
-    private CarService carService;
+    private CarProxy carProxy;
 
     @Mock
     private CarView carView;
@@ -49,7 +50,7 @@ public class CarControllerTest {
     @BeforeEach
     protected void beforeEach() {
         MockitoAnnotations.openMocks(this);
-        carController = new CarController(carService);
+        carController = new CarController(carProxy);
         carController.setCarView(carView);
     }
 
@@ -57,7 +58,7 @@ public class CarControllerTest {
     protected void test_findCarById_success() {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
         when(carView.prompt(anyString())).thenReturn(TEST_ID);
-        when(carService.findById(TEST_ID)).thenReturn(car);
+        when(carProxy.findById(TEST_ID)).thenReturn(car);
 
         Car carFindById = carController.findCarById();
         assertNotNull(carFindById);
@@ -67,7 +68,7 @@ public class CarControllerTest {
     @Test
     protected void test_findCarById_null() {
         when(carView.prompt(anyString())).thenReturn(TEST_ID);
-        when(carService.findById(TEST_ID)).thenReturn(null);
+        when(carProxy.findById(TEST_ID)).thenReturn(null);
 
         Car carFindById = carController.findCarById();
         assertNull(carFindById);
@@ -77,8 +78,8 @@ public class CarControllerTest {
     protected void test_update_success() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
-        when(carService.update(car)).thenReturn(true);
-        when(carService.existsById(anyString())).thenReturn(true);
+        when(carProxy.update(car)).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(true);
 
         String response = carController.updateCar();
         assertNotNull(response);
@@ -89,8 +90,8 @@ public class CarControllerTest {
     protected void test_update_error() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
-        when(carService.update(car)).thenReturn(false);
-        when(carService.existsById(anyString())).thenReturn(true);
+        when(carProxy.update(car)).thenReturn(false);
+        when(carProxy.existsById(anyString())).thenReturn(true);
 
         String response = carController.updateCar();
         assertNotNull(response);
@@ -101,8 +102,8 @@ public class CarControllerTest {
     protected void test_update_not_exists() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, INVALID_PLATE);
-        when(carService.update(car)).thenReturn(true);
-        when(carService.existsById(anyString())).thenReturn(false);
+        when(carProxy.update(car)).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(false);
         String response = carController.updateCar();
         assertNotNull(response);
         assertEquals(response, "A car with this id does not exists");
@@ -112,7 +113,7 @@ public class CarControllerTest {
     protected void test_update_not_previous_year() throws UnvalidCarException {
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND,
                 String.valueOf(YEAR_ONE_YEAR_AFTER_NOW), TEST_PLATE);
-        when(carService.existsById(anyString())).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(true);
 
         String response = carController.updateCar();
         assertNotNull(response);
@@ -122,7 +123,7 @@ public class CarControllerTest {
     @Test
     protected void test_update_not_number_year() throws UnvalidCarException {
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, "NOT A NUMBER", TEST_PLATE);
-        when(carService.existsById(anyString())).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(true);
 
         String response = carController.updateCar();
         assertNotNull(response);
@@ -133,7 +134,7 @@ public class CarControllerTest {
     protected void test_update_empty_plate() throws UnvalidCarException {
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND,
                 TEST_YEAR_STRING, "");
-        when(carService.existsById(anyString())).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(true);
 
         String response = carController.updateCar();
         assertNotNull(response);
@@ -144,7 +145,7 @@ public class CarControllerTest {
     protected void test_update_invalid_plate() throws UnvalidCarException {
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND,
                 TEST_YEAR_STRING, INVALID_PLATE);
-        when(carService.existsById(anyString())).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(true);
 
         String response = carController.updateCar();
         assertNotNull(response);
@@ -155,8 +156,8 @@ public class CarControllerTest {
     protected void test_save_success() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
-        when(carService.save(car)).thenReturn(true);
-        when(carService.existsById(anyString())).thenReturn(false);
+        when(carProxy.save(car)).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.saveCar();
         assertNotNull(response);
@@ -167,8 +168,8 @@ public class CarControllerTest {
     protected void test_save_error() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
-        when(carService.save(car)).thenReturn(false);
-        when(carService.existsById(anyString())).thenReturn(false);
+        when(carProxy.save(car)).thenReturn(false);
+        when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.saveCar();
         assertNotNull(response);
@@ -179,8 +180,8 @@ public class CarControllerTest {
     protected void test_save_already_exists() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, INVALID_PLATE);
-        when(carService.save(car)).thenReturn(true);
-        when(carService.existsById(anyString())).thenReturn(true);
+        when(carProxy.save(car)).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(true);
         String response = carController.saveCar();
         assertNotNull(response);
         assertEquals(response, "A car with the same id already exists");
@@ -190,7 +191,7 @@ public class CarControllerTest {
     protected void test_save_not_previous_year() throws UnvalidCarException {
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND,
                 String.valueOf(YEAR_ONE_YEAR_AFTER_NOW), TEST_PLATE);
-        when(carService.existsById(anyString())).thenReturn(false);
+        when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.saveCar();
         assertNotNull(response);
@@ -200,7 +201,7 @@ public class CarControllerTest {
     @Test
     protected void test_save_not_number_year() throws UnvalidCarException {
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, "NOT A NUMBER", TEST_PLATE);
-        when(carService.existsById(anyString())).thenReturn(false);
+        when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.saveCar();
         assertNotNull(response);
@@ -211,7 +212,7 @@ public class CarControllerTest {
     protected void test_save_empty_plate() throws UnvalidCarException {
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND,
                 TEST_YEAR_STRING, "");
-        when(carService.existsById(anyString())).thenReturn(false);
+        when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.saveCar();
         assertNotNull(response);
@@ -222,7 +223,7 @@ public class CarControllerTest {
     protected void test_save_invalid_plate() throws UnvalidCarException {
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND,
                 TEST_YEAR_STRING, INVALID_PLATE);
-        when(carService.existsById(anyString())).thenReturn(false);
+        when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.saveCar();
         assertNotNull(response);
@@ -231,7 +232,7 @@ public class CarControllerTest {
 
     @Test
     protected void test_main_menu_show_cars_empty() {
-        when(carService.findAll()).thenReturn(new ArrayList<Car>());
+        when(carProxy.findAll()).thenReturn(new ArrayList<Car>());
 
         String response = carController.selectMainMenuOption(MainMenuOptions.SHOW_CARS);
         assertNotNull(response);
@@ -242,7 +243,7 @@ public class CarControllerTest {
     protected void test_main_menu_show_cars() {
         List<Car> cars = new ArrayList<Car>();
         cars.add(new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE));
-        when(carService.findAll()).thenReturn(cars);
+        when(carProxy.findAll()).thenReturn(cars);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.SHOW_CARS);
         assertNotNull(response);
@@ -256,7 +257,7 @@ public class CarControllerTest {
     @Test
     protected void test_main_menu_show_car_success() {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carService.findById(anyString())).thenReturn(car);
+        when(carProxy.findById(anyString())).thenReturn(car);
         when(carView.prompt(anyString())).thenReturn(TEST_ID);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.SHOW_CAR);
@@ -269,7 +270,7 @@ public class CarControllerTest {
 
     @Test
     protected void test_main_menu_show_car_null() {
-        when(carService.findById(anyString())).thenReturn(null);
+        when(carProxy.findById(anyString())).thenReturn(null);
         when(carView.prompt(anyString())).thenReturn(TEST_ID);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.SHOW_CAR);
@@ -280,8 +281,8 @@ public class CarControllerTest {
     protected void test_main_menu_save() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
-        when(carService.save(car)).thenReturn(true);
-        when(carService.existsById(anyString())).thenReturn(false);
+        when(carProxy.save(car)).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.ADD_CAR);
         assertNotNull(response);
@@ -292,8 +293,8 @@ public class CarControllerTest {
     protected void test_main_menu_update() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
         when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
-        when(carService.update(car)).thenReturn(true);
-        when(carService.existsById(anyString())).thenReturn(true);
+        when(carProxy.update(car)).thenReturn(true);
+        when(carProxy.existsById(anyString())).thenReturn(true);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.UPDATE_CAR);
         assertNotNull(response);
@@ -302,7 +303,7 @@ public class CarControllerTest {
 
     @Test
     protected void test_main_menu_delete_error() {
-        when(carService.delete(anyString())).thenReturn(false);
+        when(carProxy.delete(anyString())).thenReturn(false);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.REMOVE_CAR);
         assertNotNull(response);
@@ -311,7 +312,7 @@ public class CarControllerTest {
 
     @Test
     protected void test_main_menu_delete_success() {
-        when(carService.delete(anyString())).thenReturn(true);
+        when(carProxy.delete(anyString())).thenReturn(true);
         when(carView.prompt(anyString())).thenReturn(TEST_ID);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.REMOVE_CAR);
@@ -320,7 +321,7 @@ public class CarControllerTest {
     }
 
     @Test
-    protected void test_main_menu_unvalid_option(){
+    protected void test_main_menu_unvalid_option() {
         String response = carController.selectMainMenuOption(MainMenuOptions.EXIT);
 
         assertEquals(response, "This is not a valid option");
