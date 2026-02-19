@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import it.dst.garage.dao.CarDaoFactory;
-import it.dst.garage.exceptions.PersistanceTypeException;
-import it.dst.garage.properties.GarageProperties;
 
 public interface IPropertyReader {
     static public Properties getProperties() {

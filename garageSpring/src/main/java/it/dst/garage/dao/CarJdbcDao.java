@@ -50,29 +50,29 @@ public class CarJdbcDao implements CarDao {
             "id"=?
             """;
 
-    private Connection connection;
-
     private IConnectionProvider connectionProvider;
 
     public CarJdbcDao() throws SQLException {
         connectionProvider = new BasicConnetionProvider();
-        this.connection = connectionProvider.getConnection();
         applyMigrations();
     }
 
     public void applyMigrations() throws SQLException {
-        if (!tableExists(connection, "CARS")) {
-            connection.createStatement()
-                    .executeUpdate("""
-                                CREATE TABLE "CARS"(
-                                "id" varchar(255) primary key,
-                                "brand" varchar(64),
-                                "model" varchar(64),
-                                "year" int,
-                                "plate" varchar(16)
-                                )
-                            """);
+        try (Connection connection = connectionProvider.getConnection()) {
+            if (!tableExists(connection, "CARS")) {
+                connection.createStatement()
+                        .executeUpdate("""
+                                    CREATE TABLE "CARS"(
+                                    "id" varchar(255) primary key,
+                                    "brand" varchar(64),
+                                    "model" varchar(64),
+                                    "year" int,
+                                    "plate" varchar(16)
+                                    )
+                                """);
+            }
         }
+
     }
 
     boolean tableExists(Connection connection, String tableName) throws SQLException {
@@ -84,18 +84,21 @@ public class CarJdbcDao implements CarDao {
     @Override
     public List<Car> findAll() {
         List<Car> cars = new ArrayList<Car>();
-        try (PreparedStatement pstmt = connection.prepareStatement(FIND_ALL_STATEMENT)) {
-            ResultSet results = pstmt.executeQuery();
-            while (results.next()) {
-                String carId = results.getString("id");
-                String carBrand = results.getString("brand");
-                String carModel = results.getString("model");
-                int carYear = results.getInt("year");
-                String carPlate = results.getString("plate");
-                cars.add(new Car(carId, carBrand, carModel, carYear, carPlate));
-            }
-            return cars;
+        try (Connection connection = connectionProvider.getConnection()) {
 
+            try (PreparedStatement pstmt = connection.prepareStatement(FIND_ALL_STATEMENT)) {
+                ResultSet results = pstmt.executeQuery();
+                while (results.next()) {
+                    String carId = results.getString("id");
+                    String carBrand = results.getString("brand");
+                    String carModel = results.getString("model");
+                    int carYear = results.getInt("year");
+                    String carPlate = results.getString("plate");
+                    cars.add(new Car(carId, carBrand, carModel, carYear, carPlate));
+                }
+                return cars;
+
+            }
         } catch (SQLException e) {
             return cars;
         }
@@ -103,16 +106,18 @@ public class CarJdbcDao implements CarDao {
 
     @Override
     public Car findById(String id) {
-        try (PreparedStatement pstmt = connection.prepareStatement(FIND_BY_ID_STATEMENT)) {
-            pstmt.setString(1, id);
-            ResultSet results = pstmt.executeQuery();
-            String carId = results.getString("id");
-            String carBrand = results.getString("brand");
-            String carModel = results.getString("model");
-            int carYear = results.getInt("year");
-            String carPlate = results.getString("plate");
-            return new Car(carId, carBrand, carModel, carYear, carPlate);
+        try (Connection connection = connectionProvider.getConnection()) {
 
+            try (PreparedStatement pstmt = connection.prepareStatement(FIND_BY_ID_STATEMENT)) {
+                pstmt.setString(1, id);
+                ResultSet results = pstmt.executeQuery();
+                String carId = results.getString("id");
+                String carBrand = results.getString("brand");
+                String carModel = results.getString("model");
+                int carYear = results.getInt("year");
+                String carPlate = results.getString("plate");
+                return new Car(carId, carBrand, carModel, carYear, carPlate);
+            }
         } catch (SQLException e) {
             return null;
         }
@@ -120,13 +125,16 @@ public class CarJdbcDao implements CarDao {
 
     @Override
     public boolean save(Car car) {
-        try (PreparedStatement pstmt = connection.prepareStatement(SAVE_STATEMENT)) {
-            pstmt.setString(1, car.getId());
-            pstmt.setString(2, car.getBrand());
-            pstmt.setString(3, car.getModel());
-            pstmt.setInt(4, car.getYear());
-            pstmt.setString(5, car.getPlate());
-            return pstmt.executeUpdate() > 0;
+        try (Connection connection = connectionProvider.getConnection()) {
+
+            try (PreparedStatement pstmt = connection.prepareStatement(SAVE_STATEMENT)) {
+                pstmt.setString(1, car.getId());
+                pstmt.setString(2, car.getBrand());
+                pstmt.setString(3, car.getModel());
+                pstmt.setInt(4, car.getYear());
+                pstmt.setString(5, car.getPlate());
+                return pstmt.executeUpdate() > 0;
+            }
         } catch (SQLException e) {
             return false;
         }
@@ -135,14 +143,17 @@ public class CarJdbcDao implements CarDao {
 
     @Override
     public boolean update(Car car) {
-        try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_STATEMENT)) {
-            pstmt.setString(1, car.getBrand());
-            pstmt.setString(2, car.getModel());
-            pstmt.setInt(3, car.getYear());
-            pstmt.setString(4, car.getPlate());
-            pstmt.setString(5, car.getId());
+        try (Connection connection = connectionProvider.getConnection()) {
 
-            return pstmt.executeUpdate() > 0;
+            try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_STATEMENT)) {
+                pstmt.setString(1, car.getBrand());
+                pstmt.setString(2, car.getModel());
+                pstmt.setInt(3, car.getYear());
+                pstmt.setString(4, car.getPlate());
+                pstmt.setString(5, car.getId());
+
+                return pstmt.executeUpdate() > 0;
+            }
         } catch (SQLException e) {
             return false;
         }
@@ -150,9 +161,12 @@ public class CarJdbcDao implements CarDao {
 
     @Override
     public boolean delete(String id) {
-        try (PreparedStatement pstmt = connection.prepareStatement(DELETE_STATEMENT)) {
-            pstmt.setString(1, id);
-            return pstmt.executeUpdate() > 0;
+        try (Connection connection = connectionProvider.getConnection()) {
+
+            try (PreparedStatement pstmt = connection.prepareStatement(DELETE_STATEMENT)) {
+                pstmt.setString(1, id);
+                return pstmt.executeUpdate() > 0;
+            }
         } catch (SQLException e) {
             return false;
         }
@@ -160,11 +174,14 @@ public class CarJdbcDao implements CarDao {
 
     @Override
     public boolean existsById(String id) {
-        try (PreparedStatement pstmt = connection.prepareStatement(EXISTS_BY_ID_STATEMENT)) {
-            pstmt.setString(1, id);
-            ResultSet results = pstmt.executeQuery();
-            return results.getBoolean(1);
+        try (Connection connection = connectionProvider.getConnection()) {
 
+            try (PreparedStatement pstmt = connection.prepareStatement(EXISTS_BY_ID_STATEMENT)) {
+                pstmt.setString(1, id);
+                ResultSet results = pstmt.executeQuery();
+                return results.getBoolean(1);
+
+            }
         } catch (SQLException e) {
             return false;
         }
