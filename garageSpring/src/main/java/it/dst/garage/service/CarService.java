@@ -50,7 +50,7 @@ public class CarService {
         }
     }
 
-    public boolean update(Car car) throws UnvalidCarException {
+    public boolean update(Car car) {
         if (carDao.existsById(car.getId())) {
             try {
                 return transactionManager.inTransaction(() -> {

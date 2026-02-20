@@ -22,7 +22,7 @@ public class JdbcTransactionManagerTest {
         MockitoAnnotations.openMocks(this);
         jdbcTransactionManager = new JdbcTransactionManager(connectionProvider);
         when(connectionProvider.getConnection())
-                .thenAnswer(invocation -> DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"));
+                .thenAnswer(invocation -> DriverManager.getConnection("jdbc:h2:mem:jdbctest;DB_CLOSE_DELAY=-1"));
     }
 
     @Test

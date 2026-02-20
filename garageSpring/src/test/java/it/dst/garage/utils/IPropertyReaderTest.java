@@ -12,6 +12,6 @@ class IPropertyReaderTest {
 
         assertNotNull(props);
         assertFalse(props.isEmpty());
-        assertEquals("test_url", props.getProperty("db.url"));
+        assertEquals("h2:mem:connectiontest", props.getProperty("ddbb.url"));
     }
 }
