@@ -1,5 +1,6 @@
 package it.dst.garage.dao;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.dst.garage.exceptions.PersistanceTypeException;
+import it.dst.garage.migration.CarMigration;
 import it.dst.garage.properties.GarageProperties;
 import it.dst.garage.service.CarService;
 import it.dst.garage.utils.IConnectionProvider;
@@ -21,6 +23,9 @@ public class CarDaoFactory {
 
     @Autowired
     private IConnectionProvider connectionProvider;
+
+    @Autowired
+    private CarMigration carMigration;
 
     public CarDaoFactory() throws PersistanceTypeException {
 
@@ -41,12 +46,12 @@ public class CarDaoFactory {
         LOG.info("Persistance Type: " + persistanceType);
     }
 
-    public CarDao create() throws PersistanceTypeException, SQLException {
+    public CarDao create() throws PersistanceTypeException, SQLException, IOException {
         switch (persistanceType) {
             case "map":
                 return new CarMapDao();
             case "ddbb":
-                return new CarJdbcDao(connectionProvider);
+                return new CarJdbcDao(connectionProvider, carMigration);
             case "array":
                 return new CarArrayDao();
             default:

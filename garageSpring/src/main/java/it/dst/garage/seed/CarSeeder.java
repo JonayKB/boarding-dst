@@ -25,7 +25,7 @@ public class CarSeeder {
     private Resource carsJsonResource;
     private final static Logger LOG = LoggerFactory.getLogger(CarSeeder.class);
 
-    public CarSeeder(CarDaoFactory carDaoFactory) throws SQLException, PersistanceTypeException {
+    public CarSeeder(CarDaoFactory carDaoFactory) throws SQLException, PersistanceTypeException, IOException {
         this.carDao = carDaoFactory.create();
     }
 

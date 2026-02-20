@@ -1,5 +1,6 @@
 package it.dst.garage.service;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class CarService {
     private ITransactionManager transactionManager;
 
     public CarService(CarDaoFactory carDaoFactory, ITransactionManager transactionManager)
-            throws SQLException, PersistanceTypeException {
+            throws SQLException, PersistanceTypeException, IOException {
         this.carDaoFactory = carDaoFactory;
         this.transactionManager = transactionManager;
 
