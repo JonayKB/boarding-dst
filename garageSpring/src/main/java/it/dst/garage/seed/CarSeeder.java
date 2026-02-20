@@ -16,7 +16,6 @@ import it.dst.garage.dao.CarDao;
 import it.dst.garage.dao.CarDaoFactory;
 import it.dst.garage.exceptions.PersistanceTypeException;
 import it.dst.garage.model.Car;
-import it.dst.garage.service.CarService;
 
 @Service
 public class CarSeeder {
