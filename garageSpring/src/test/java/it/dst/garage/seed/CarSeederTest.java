@@ -39,7 +39,7 @@ public class CarSeederTest {
             """;
 
     @BeforeEach
-    protected void beforeEach() throws SQLException, PersistanceTypeException {
+    protected void beforeEach() throws SQLException, PersistanceTypeException, IOException {
         MockitoAnnotations.openMocks(this);
         carDao = new CarMapDao();
         when(carDaoFactory.create()).thenReturn(carDao);

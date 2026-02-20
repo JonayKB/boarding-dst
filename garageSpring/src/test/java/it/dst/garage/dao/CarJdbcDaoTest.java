@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,7 +23,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import it.dst.garage.migration.CarMigration;
 import it.dst.garage.model.Car;
 import it.dst.garage.utils.IConnectionProvider;
 
@@ -40,19 +47,38 @@ public class CarJdbcDaoTest {
 
     @Mock
     private IConnectionProvider connectionProvider;
+    private CarMigration carMigration;
 
     private Connection connection;
     private static final String DB_PATH = "./target/testdb";
 
+    @Mock
+    private Resource migrationResource;
+
+    private final String SQL_CONTENT = "CREATE TABLE IF NOT EXISTS \"CARS\" (" +
+            "\"id\" varchar(255) primary key, " +
+            "\"brand\" varchar(64), \"model\" varchar(64), " +
+            "\"YEAR\" int, \"plate\" varchar(16));";
+
     @BeforeEach
-    void beforeEach() throws SQLException {
+    void beforeEach() throws SQLException, IOException {
         MockitoAnnotations.openMocks(this);
 
         String url = "jdbc:h2:" + DB_PATH + ";AUTO_SERVER=TRUE";
-
         when(connectionProvider.getConnection()).thenAnswer(inv -> DriverManager.getConnection(url));
 
-        carJdbcDao = new CarJdbcDao(connectionProvider);
+        when(migrationResource.getFilename()).thenReturn("001_create_cars.sql");
+
+        InputStream inputStream = new ByteArrayInputStream(SQL_CONTENT.getBytes());
+        when(migrationResource.getInputStream()).thenReturn(inputStream);
+
+        Resource[] mockMigrations = new Resource[] { migrationResource };
+
+        carMigration = new CarMigration();
+
+        ReflectionTestUtils.setField(carMigration, "migrations", mockMigrations);
+
+        carJdbcDao = new CarJdbcDao(connectionProvider, carMigration);
     }
 
     @AfterEach

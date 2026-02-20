@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class CarServiceTest {
     private ITransactionManager transactionManager;
 
     @BeforeEach
-    protected void beforeEach() throws SQLException, PersistanceTypeException {
+    protected void beforeEach() throws SQLException, PersistanceTypeException, IOException {
         MockitoAnnotations.openMocks(this);
         when(carDaoFactoryMock.create()).thenReturn(carDaoMock);
         carService = new CarService(carDaoFactoryMock, transactionManager);
