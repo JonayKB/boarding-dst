@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.model.Car;
 import it.dst.garage.service.CarService;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class CarProxy {
     @Autowired
     private CarService carService;

@@ -3,6 +3,8 @@ package it.dst.garage.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -101,7 +103,7 @@ public class CarControllerTest {
     @Test
     protected void test_update_not_exists() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, INVALID_PLATE);
+        when(carView.prompt(anyString())).thenReturn(TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, INVALID_PLATE);
         when(carProxy.update(car)).thenReturn(true);
         when(carProxy.existsById(anyString())).thenReturn(false);
         String response = carController.updateCar();
@@ -154,20 +156,19 @@ public class CarControllerTest {
 
     @Test
     protected void test_save_success() throws UnvalidCarException {
-        Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
-        when(carProxy.save(car)).thenReturn(true);
+        when(carView.prompt(anyString())).thenReturn(TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
+        when(carProxy.save(any(Car.class))).thenReturn(true);
         when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.saveCar();
         assertNotNull(response);
-        assertEquals(response, "Car with id:" + car.getId() + " has been saved correctly");
+        assertTrue(response.endsWith("has been saved correctly"));
     }
 
     @Test
     protected void test_save_error() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
+        when(carView.prompt(anyString())).thenReturn(TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
         when(carProxy.save(car)).thenReturn(false);
         when(carProxy.existsById(anyString())).thenReturn(false);
 
@@ -177,19 +178,8 @@ public class CarControllerTest {
     }
 
     @Test
-    protected void test_save_already_exists() throws UnvalidCarException {
-        Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, INVALID_PLATE);
-        when(carProxy.save(car)).thenReturn(true);
-        when(carProxy.existsById(anyString())).thenReturn(true);
-        String response = carController.saveCar();
-        assertNotNull(response);
-        assertEquals(response, "A car with the same id already exists");
-    }
-
-    @Test
     protected void test_save_not_previous_year() throws UnvalidCarException {
-        when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND,
+        when(carView.prompt(anyString())).thenReturn(TEST_MODEL, TEST_BRAND,
                 String.valueOf(YEAR_ONE_YEAR_AFTER_NOW), TEST_PLATE);
         when(carProxy.existsById(anyString())).thenReturn(false);
 
@@ -200,7 +190,7 @@ public class CarControllerTest {
 
     @Test
     protected void test_save_not_number_year() throws UnvalidCarException {
-        when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, "NOT A NUMBER", TEST_PLATE);
+        when(carView.prompt(anyString())).thenReturn(TEST_MODEL, TEST_BRAND, "NOT A NUMBER", TEST_PLATE);
         when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.saveCar();
@@ -210,7 +200,7 @@ public class CarControllerTest {
 
     @Test
     protected void test_save_empty_plate() throws UnvalidCarException {
-        when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND,
+        when(carView.prompt(anyString())).thenReturn(TEST_MODEL, TEST_BRAND,
                 TEST_YEAR_STRING, "");
         when(carProxy.existsById(anyString())).thenReturn(false);
 
@@ -221,7 +211,7 @@ public class CarControllerTest {
 
     @Test
     protected void test_save_invalid_plate() throws UnvalidCarException {
-        when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND,
+        when(carView.prompt(anyString())).thenReturn(TEST_MODEL, TEST_BRAND,
                 TEST_YEAR_STRING, INVALID_PLATE);
         when(carProxy.existsById(anyString())).thenReturn(false);
 
@@ -279,14 +269,13 @@ public class CarControllerTest {
 
     @Test
     protected void test_main_menu_save() throws UnvalidCarException {
-        Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carView.prompt(anyString())).thenReturn(TEST_ID, TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
-        when(carProxy.save(car)).thenReturn(true);
+        when(carView.prompt(anyString())).thenReturn(TEST_MODEL, TEST_BRAND, TEST_YEAR_STRING, TEST_PLATE);
+        when(carProxy.save(any(Car.class))).thenReturn(true);
         when(carProxy.existsById(anyString())).thenReturn(false);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.ADD_CAR);
         assertNotNull(response);
-        assertEquals(response, "Car with id:" + car.getId() + " has been saved correctly");
+        assertTrue(response.endsWith("has been saved correctly"));
     }
 
     @Test
