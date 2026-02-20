@@ -25,7 +25,6 @@ import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.model.Car;
 import it.dst.garage.proxy.CarProxy;
 import it.dst.garage.seed.CarSeeder;
-import it.dst.garage.service.CarService;
 import it.dst.garage.view.CarView;
 
 public class CarControllerTest {
@@ -320,6 +319,7 @@ public class CarControllerTest {
         assertEquals(response, "This is not a valid option");
 
     }
+
     @Test
     protected void test_main_menu_carSeeder_option() {
         String response = carController.selectMainMenuOption(MainMenuOptions.SEED_DATABASE);

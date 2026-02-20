@@ -14,7 +14,6 @@ import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.model.Car;
 import it.dst.garage.proxy.CarProxy;
 import it.dst.garage.seed.CarSeeder;
-import it.dst.garage.service.CarService;
 import it.dst.garage.view.CarView;
 
 @Controller

@@ -1,6 +1,7 @@
 package it.dst.garage.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -16,6 +17,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -23,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -109,7 +110,21 @@ public class CarJdbcDaoTest {
     }
 
     @Test
-    protected void test_save_findById_update_delete() throws SQLException {
+    protected void test_findAll_success() {
+        Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
+        assertTrue(carJdbcDao.save(car));
+        List<Car> cars = carJdbcDao.findAll();
+        assertFalse(cars.isEmpty());
+        assertEquals(TEST_ID, cars.get(0).getId());
+        assertEquals(TEST_BRAND, cars.get(0).getBrand());
+        assertEquals(TEST_MODEL, cars.get(0).getModel());
+        assertEquals(TEST_YEAR, cars.get(0).getYear());
+        assertEquals(TEST_PLATE, cars.get(0).getPlate());
+
+    }
+
+    @Test
+    protected void test_save_findById_existById_update_delete() throws SQLException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
 
         assertTrue(carJdbcDao.save(car));
@@ -125,6 +140,8 @@ public class CarJdbcDaoTest {
         assertEquals(car.getPlate(), carFindById.getPlate());
         assertEquals(car.getYear(), carFindById.getYear());
 
+        assertTrue(carJdbcDao.existsById(TEST_ID));
+
         Car carUpdate = new Car(TEST_ID, TEST_BRAND, "UPDATE_MODEL", TEST_YEAR, TEST_PLATE);
         assertTrue(carJdbcDao.update(carUpdate));
         assertEquals(car, carFindById);
@@ -137,5 +154,8 @@ public class CarJdbcDaoTest {
         assertTrue(carJdbcDao.delete(TEST_ID));
 
         assertNull(carJdbcDao.findById(TEST_ID));
+
+        assertFalse(carJdbcDao.existsById(TEST_ID));
+
     }
 }
