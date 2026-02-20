@@ -11,6 +11,7 @@ import it.dst.garage.dao.CarDaoFactory;
 import it.dst.garage.exceptions.PersistanceTypeException;
 import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.model.Car;
+import it.dst.garage.utils.ITransactionManager;
 
 @Service
 public class CarService {
@@ -18,8 +19,13 @@ public class CarService {
     @Autowired
     private CarDaoFactory carDaoFactory;
 
-    public CarService(CarDaoFactory carDaoFactory) throws SQLException, PersistanceTypeException {
+    @Autowired
+    private ITransactionManager transactionManager;
+
+    public CarService(CarDaoFactory carDaoFactory, ITransactionManager transactionManager)
+            throws SQLException, PersistanceTypeException {
         this.carDaoFactory = carDaoFactory;
+        this.transactionManager = transactionManager;
 
         this.carDao = this.carDaoFactory.create();
     }
@@ -33,18 +39,39 @@ public class CarService {
     }
 
     public boolean save(Car car) throws UnvalidCarException {
-        return carDao.save(car);
+        try {
+            return transactionManager.inTransaction(() -> {
+                return carDao.save(car);
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean update(Car car) throws UnvalidCarException {
         if (carDao.existsById(car.getId())) {
-            return carDao.update(car);
+            try {
+                return transactionManager.inTransaction(() -> {
+                    return carDao.update(car);
+                });
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         return false;
     }
 
     public boolean delete(String id) {
-        return carDao.delete(id);
+        try {
+            return transactionManager.inTransaction(() -> {
+                return carDao.delete(id);
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean existsById(String id) {

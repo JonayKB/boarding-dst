@@ -6,6 +6,7 @@ public enum MainMenuOptions {
     ADD_CAR("Add a new car"),
     UPDATE_CAR("Updates a created car"),
     REMOVE_CAR("Removes a car"),
+    SEED_DATABASE("Add testing information about cars"),
     EXIT("Leave Program");
 
     public final String label;

@@ -32,14 +32,14 @@ public class CarJdbcDao implements CarDao {
             """;
     private static final String SAVE_STATEMENT = """
             INSERT INTO "CARS"
-            (id,brand,model,year,plate)
+            ("id","brand","model","YEAR","plate")
             VALUES
             (?,?,?,?,?)
             """;
     private static final String UPDATE_STATEMENT = """
             UPDATE "CARS"
             SET
-            "brand" = ?, "model" = ?, "year" = ?, "plate" = ?
+            "brand" = ?, "model" = ?, "YEAR" = ?, "plate" = ?
             WHERE "id" = ?
             """;
     private static final String DELETE_STATEMENT = """
@@ -64,7 +64,7 @@ public class CarJdbcDao implements CarDao {
                                     "id" varchar(255) primary key,
                                     "brand" varchar(64),
                                     "model" varchar(64),
-                                    "year" int,
+                                    "YEAR" int,
                                     "plate" varchar(16)
                                     )
                                 """);
@@ -90,7 +90,7 @@ public class CarJdbcDao implements CarDao {
                     String carId = results.getString("id");
                     String carBrand = results.getString("brand");
                     String carModel = results.getString("model");
-                    int carYear = results.getInt("year");
+                    int carYear = results.getInt("YEAR");
                     String carPlate = results.getString("plate");
                     cars.add(new Car(carId, carBrand, carModel, carYear, carPlate));
                 }
@@ -109,22 +109,29 @@ public class CarJdbcDao implements CarDao {
             try (PreparedStatement pstmt = connection.prepareStatement(FIND_BY_ID_STATEMENT)) {
                 pstmt.setString(1, id);
                 ResultSet results = pstmt.executeQuery();
-                String carId = results.getString("id");
-                String carBrand = results.getString("brand");
-                String carModel = results.getString("model");
-                int carYear = results.getInt("year");
-                String carPlate = results.getString("plate");
-                return new Car(carId, carBrand, carModel, carYear, carPlate);
+                if (results.next()) {
+
+                    String carId = results.getString("id");
+                    String carBrand = results.getString("brand");
+                    String carModel = results.getString("model");
+                    int carYear = results.getInt("YEAR");
+                    String carPlate = results.getString("plate");
+                    return new Car(carId, carBrand, carModel, carYear, carPlate);
+                }
+                return null;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             return null;
         }
     }
 
     @Override
     public boolean save(Car car) {
-        try (Connection connection = connectionProvider.getConnection()) {
-
+        Connection connection = null;
+        try {
+            connection = connectionProvider.getConnection();
+            boolean isTransactional = !connection.getAutoCommit();
             try (PreparedStatement pstmt = connection.prepareStatement(SAVE_STATEMENT)) {
                 pstmt.setString(1, car.getId());
                 pstmt.setString(2, car.getBrand());
@@ -132,6 +139,10 @@ public class CarJdbcDao implements CarDao {
                 pstmt.setInt(4, car.getYear());
                 pstmt.setString(5, car.getPlate());
                 return pstmt.executeUpdate() > 0;
+            } finally {
+                if (!isTransactional) {
+                    connection.close();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -142,8 +153,10 @@ public class CarJdbcDao implements CarDao {
 
     @Override
     public boolean update(Car car) {
-        try (Connection connection = connectionProvider.getConnection()) {
-
+        Connection connection = null;
+        try {
+            connection = connectionProvider.getConnection();
+            boolean isTransactional = !connection.getAutoCommit();
             try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_STATEMENT)) {
                 pstmt.setString(1, car.getBrand());
                 pstmt.setString(2, car.getModel());
@@ -152,6 +165,10 @@ public class CarJdbcDao implements CarDao {
                 pstmt.setString(5, car.getId());
 
                 return pstmt.executeUpdate() > 0;
+            } finally {
+                if (!isTransactional) {
+                    connection.close();
+                }
             }
         } catch (SQLException e) {
             return false;
@@ -160,11 +177,17 @@ public class CarJdbcDao implements CarDao {
 
     @Override
     public boolean delete(String id) {
-        try (Connection connection = connectionProvider.getConnection()) {
-
+        Connection connection = null;
+        try {
+            connection = connectionProvider.getConnection();
+            boolean isTransactional = !connection.getAutoCommit();
             try (PreparedStatement pstmt = connection.prepareStatement(DELETE_STATEMENT)) {
                 pstmt.setString(1, id);
                 return pstmt.executeUpdate() > 0;
+            } finally {
+                if (!isTransactional) {
+                    connection.close();
+                }
             }
         } catch (SQLException e) {
             return false;
@@ -177,9 +200,12 @@ public class CarJdbcDao implements CarDao {
 
             try (PreparedStatement pstmt = connection.prepareStatement(EXISTS_BY_ID_STATEMENT)) {
                 pstmt.setString(1, id);
-                ResultSet results = pstmt.executeQuery();
-                return results.getBoolean(1);
 
+                ResultSet results = pstmt.executeQuery();
+                if (results.next()) {
+                    return results.getBoolean(1);
+                }
+                return false;
             }
         } catch (SQLException e) {
             return false;

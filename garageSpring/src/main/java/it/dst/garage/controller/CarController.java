@@ -13,6 +13,7 @@ import it.dst.garage.enums.MainMenuOptions;
 import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.model.Car;
 import it.dst.garage.proxy.CarProxy;
+import it.dst.garage.seed.CarSeeder;
 import it.dst.garage.service.CarService;
 import it.dst.garage.view.CarView;
 
@@ -30,12 +31,16 @@ public class CarController {
     @Autowired
     private CarProxy carProxy;
     private CarView carView;
+
+    @Autowired
+    private CarSeeder carSeeder;
     String plateRegex = "^[A-Z]{2,3}\\d{4}$";
 
     Pattern pattern = Pattern.compile(plateRegex);
 
-    public CarController(CarProxy carProxy) {
+    public CarController(CarProxy carProxy, CarSeeder carSeeder) {
         this.carProxy = carProxy;
+        this.carSeeder = carSeeder;
     }
 
     public String selectMainMenuOption(MainMenuOptions option) {
@@ -61,6 +66,9 @@ public class CarController {
                 return updateCar();
             case REMOVE_CAR:
                 return deleteCar() ? "Succefuly deleted" : "This car wasn't on our database";
+            case SEED_DATABASE:
+                carSeeder.seed();
+                return "Executed seeder";
 
             default:
                 return "This is not a valid option";
