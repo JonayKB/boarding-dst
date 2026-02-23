@@ -59,6 +59,6 @@ public class CarSeederTest {
         carSeeder.seed();
 
         verify(carRepository, times(3)).save(any());
-        
+
     }
 }
