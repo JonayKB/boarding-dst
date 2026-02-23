@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import it.dst.garage.dao.CarDaoFactory;
-
 public interface IPropertyReader {
     static public Properties getProperties() {
         Properties prop = new Properties();
-        try (InputStream input = CarDaoFactory.class.getClassLoader()
+        try (InputStream input = IPropertyReader.class.getClassLoader()
                 .getResourceAsStream("application.properties")) {
 
             if (input == null) {

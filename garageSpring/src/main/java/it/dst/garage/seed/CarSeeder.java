@@ -3,7 +3,6 @@ package it.dst.garage.seed;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -12,21 +11,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import it.dst.garage.dao.CarDao;
-import it.dst.garage.dao.CarDaoFactory;
-import it.dst.garage.exceptions.PersistanceTypeException;
+import it.dst.garage.exceptions.UnvalidCarException;
+import it.dst.garage.mapper.ICarEntityMapper;
 import it.dst.garage.model.Car;
+import it.dst.garage.repository.ICarRepository;
+import it.dst.garage.service.CarService;
 
 @Service
 public class CarSeeder {
-    private final CarDao carDao;
+    private ICarRepository carRepository;
+    private ICarEntityMapper carEntityMapper;
 
     @Value("classpath:fixtures/cars.json")
     private Resource carsJsonResource;
     private final static Logger LOG = LoggerFactory.getLogger(CarSeeder.class);
 
-    public CarSeeder(CarDaoFactory carDaoFactory) throws SQLException, PersistanceTypeException, IOException {
-        this.carDao = carDaoFactory.create();
+    public CarSeeder(ICarRepository carRepository, ICarEntityMapper carEntityMapper) {
+        this.carRepository = carRepository;
+        this.carEntityMapper = carEntityMapper;
     }
 
     public void seed() {
@@ -54,8 +56,9 @@ public class CarSeeder {
 
                 Car car = new Car(id, brand, model, year, plate);
 
-                if (!carDao.existsById(id)) {
-                    if (carDao.save(car)) {
+                if (!carRepository.existsById(id)) {
+
+                    if (carRepository.save(carEntityMapper.toEntity(car))) {
                         LOG.info("Added succefuly car with id: " + car.getId());
                     } else {
                         LOG.error("Failed to add car with id: " + car.getId());

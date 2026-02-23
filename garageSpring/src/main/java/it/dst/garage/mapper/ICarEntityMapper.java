@@ -1,0 +1,20 @@
+package it.dst.garage.mapper;
+
+import java.util.List;
+
+import org.mapstruct.Mapper;
+
+import it.dst.garage.model.Car;
+import it.dst.garage.model.entity.CarEntity;
+
+@Mapper(componentModel = "spring")
+public interface ICarEntityMapper {
+    CarEntity toEntity(Car car);
+
+    Car toModel(CarEntity carEntity);
+
+    List<CarEntity> toEntity(List<Car> cars);
+
+    List<Car> toModel(List<CarEntity> carEntities);
+
+}
