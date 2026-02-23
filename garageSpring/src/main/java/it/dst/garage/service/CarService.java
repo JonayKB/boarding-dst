@@ -31,7 +31,7 @@ public class CarService {
         return carEntityMapper.toModel(carRepository.findById(id));
     }
 
-    public boolean save(Car car) throws UnvalidCarException {
+    public boolean save(Car car)  {
         return carRepository.save(carEntityMapper.toEntity(car));
 
     }

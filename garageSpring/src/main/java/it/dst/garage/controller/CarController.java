@@ -11,9 +11,12 @@ import org.springframework.stereotype.Controller;
 
 import it.dst.garage.enums.MainMenuOptions;
 import it.dst.garage.exceptions.UnvalidCarException;
+import it.dst.garage.mapper.ICarDtoMapper;
 import it.dst.garage.model.Car;
+import it.dst.garage.model.dto.CarDto;
 import it.dst.garage.proxy.CarProxy;
 import it.dst.garage.seed.CarSeeder;
+import it.dst.garage.utils.ValidationUtils;
 import it.dst.garage.view.CarView;
 
 @Controller
@@ -23,23 +26,20 @@ public class CarController {
     private static final String PROMPT_MODEL = "Write the MODEL: ";
     private static final String PROMPT_BRAND = "Write the BRAND: ";
     private static final String PROMPT_ID = "Write the ID: ";
-    private static final String ERROR_YEAR_NOT_NUMBER = "Year date must be previous to actual year";
-    private static final String ERROR_PLATE_NOT_VALID = "Plate is not valid, should be like GDP1230";
-    private static final String ERROR_PLATE_EMPTY = "The plate should not be empty";
     private static final String ERROR_YEAR_NUMBER = "Year should be a number";
-    @Autowired
     private CarProxy carProxy;
     private CarView carView;
 
-    @Autowired
     private CarSeeder carSeeder;
+    private ICarDtoMapper carDtoMapper;
     String plateRegex = "^[A-Z]{2,3}\\d{4}$";
 
     Pattern pattern = Pattern.compile(plateRegex);
 
-    public CarController(CarProxy carProxy, CarSeeder carSeeder) {
+    public CarController(CarProxy carProxy, CarSeeder carSeeder, ICarDtoMapper carDtoMapper) {
         this.carProxy = carProxy;
         this.carSeeder = carSeeder;
+        this.carDtoMapper = carDtoMapper;
     }
 
     public String selectMainMenuOption(MainMenuOptions option) {
@@ -82,75 +82,59 @@ public class CarController {
     }
 
     protected String saveCar() {
+        String id;
+        do {
+            id = UUID.randomUUID().toString();
+        } while (carProxy.existsById(id));
+
+        String brand = carView.prompt(PROMPT_BRAND);
+        String model = carView.prompt(PROMPT_MODEL);
+        int year;
         try {
-            String id;
-            do {
-                id = UUID.randomUUID().toString();
+            year = Integer.parseInt(carView.prompt(PROMPT_YEAR));
+        } catch (NumberFormatException e) {
+            return ERROR_YEAR_NUMBER;
+        }
+        String plate = carView.prompt(PROMPT_PLATE);
 
-            } while (carProxy.existsById(id));
-            String brand = carView.prompt(PROMPT_BRAND);
-            String model = carView.prompt(PROMPT_MODEL);
-            int year = 0;
-            try {
-                year = Integer.parseInt(carView.prompt(PROMPT_YEAR));
-                if (year > Year.now().getValue()) {
-                    throw new UnvalidCarException(ERROR_YEAR_NOT_NUMBER);
-                }
-            } catch (NumberFormatException e) {
-                return ERROR_YEAR_NUMBER;
-            }
-            String plate = carView.prompt(PROMPT_PLATE);
-            if (plate == null || plate.isEmpty()) {
-                throw new UnvalidCarException(ERROR_PLATE_EMPTY);
-            }
-            Matcher matcher = pattern.matcher(plate);
-            if (!matcher.matches()) {
-                throw new UnvalidCarException(ERROR_PLATE_NOT_VALID);
+        CarDto car = new CarDto(id, brand, model, year, plate);
+        String validationError = ValidationUtils.validate(car);
 
-            }
-            Car car = new Car(id, brand, model, year, plate);
-            return carProxy.save(car) ? "Car with id:" + car.getId() + " has been saved correctly"
-                    : "Something happend during saving";
-        } catch (UnvalidCarException e) {
-            return e.getMessage();
+        if (validationError != null) {
+            return validationError;
         }
 
+        return carProxy.save(carDtoMapper.toModel(car))
+                ? "Car with id: " + car.getId() + " has been saved correctly"
+                : "Something happened during saving";
     }
 
     protected String updateCar() {
-        try {
-            String id = carView.prompt(PROMPT_ID);
-            if (!carProxy.existsById(id)) {
-                throw new UnvalidCarException("A car with this id does not exists");
-            }
-            String brand = carView.prompt(PROMPT_BRAND);
-            String model = carView.prompt(PROMPT_MODEL);
-            int year = 0;
-            try {
-                year = Integer.parseInt(carView.prompt(PROMPT_YEAR));
-                if (year > Year.now().getValue()) {
-                    throw new UnvalidCarException(ERROR_YEAR_NOT_NUMBER);
-                }
-            } catch (NumberFormatException e) {
-                return ERROR_YEAR_NUMBER;
-
-            }
-            String plate = carView.prompt(PROMPT_PLATE);
-            if (plate == null || plate.isEmpty()) {
-                throw new UnvalidCarException(ERROR_PLATE_EMPTY);
-            }
-            Matcher matcher = pattern.matcher(plate);
-            if (!matcher.matches()) {
-                throw new UnvalidCarException(ERROR_PLATE_NOT_VALID);
-
-            }
-            Car car = new Car(id, brand, model, year, plate);
-            return carProxy.update(car) ? "Car with id:" + car.getId() + " has been updated correctly"
-                    : "Something happend during updating";
-        } catch (UnvalidCarException e) {
-            return e.getMessage();
+        String id = carView.prompt(PROMPT_ID);
+        if (!carProxy.existsById(id)) {
+            return "A car with this id does not exist";
         }
 
+        String brand = carView.prompt(PROMPT_BRAND);
+        String model = carView.prompt(PROMPT_MODEL);
+        int year;
+        try {
+            year = Integer.parseInt(carView.prompt(PROMPT_YEAR));
+        } catch (NumberFormatException e) {
+            return ERROR_YEAR_NUMBER;
+        }
+        String plate = carView.prompt(PROMPT_PLATE);
+
+        CarDto car = new CarDto(id, brand, model, year, plate);
+        String validationError = ValidationUtils.validate(car);
+
+        if (validationError != null) {
+            return validationError;
+        }
+
+        return carProxy.update(carDtoMapper.toModel(car))
+                ? "Car with id: " + car.getId() + " has been updated correctly"
+                : "Something happened during updating";
     }
 
     protected boolean deleteCar() {

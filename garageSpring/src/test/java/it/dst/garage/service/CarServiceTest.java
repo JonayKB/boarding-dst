@@ -11,22 +11,18 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import it.dst.garage.dao.CarDao;
 import it.dst.garage.exceptions.PersistanceTypeException;
 import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.mapper.ICarEntityMapper;
 import it.dst.garage.mapper.ICarEntityMapperImpl;
-import it.dst.garage.model.Car;
 import it.dst.garage.model.entity.CarEntity;
 import it.dst.garage.repository.ICarRepository;
-import it.dst.garage.utils.ITransactionManager;
 
 public class CarServiceTest {
 

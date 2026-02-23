@@ -36,7 +36,7 @@ public class CarProxy {
         return car;
     }
 
-    public boolean save(Car car) throws UnvalidCarException {
+    public boolean save(Car car)  {
         boolean status = carService.save(car);
         if (status) {
             LOG.info("Save: Saved succefuly car with id " + car.getId());
@@ -45,7 +45,7 @@ public class CarProxy {
         return status;
     }
 
-    public boolean update(Car car) throws UnvalidCarException {
+    public boolean update(Car car)  {
         boolean status = carService.update(car);
         if (status) {
             LOG.info("Update: Updated succefuly car with id " + car.getId());

@@ -22,6 +22,8 @@ import org.mockito.MockitoAnnotations;
 
 import it.dst.garage.enums.MainMenuOptions;
 import it.dst.garage.exceptions.UnvalidCarException;
+import it.dst.garage.mapper.ICarDtoMapper;
+import it.dst.garage.mapper.ICarDtoMapperImpl;
 import it.dst.garage.model.Car;
 import it.dst.garage.proxy.CarProxy;
 import it.dst.garage.seed.CarSeeder;
@@ -30,8 +32,8 @@ import it.dst.garage.view.CarView;
 public class CarControllerTest {
     private static final String INVALID_PLATE = "INVALID_PLATE";
     private static final int YEAR_ONE_YEAR_AFTER_NOW = Year.now().plusYears(1).getValue();
-    private static final int TEST_YEAR = 120;
-    private static final String TEST_YEAR_STRING = "120";
+    private static final int TEST_YEAR = 2000;
+    private static final String TEST_YEAR_STRING = "2000";
 
     private static final String TEST_BRAND = "TEST_BRAND";
 
@@ -50,12 +52,14 @@ public class CarControllerTest {
     @Mock
     private CarSeeder carSeeder;
 
+    private ICarDtoMapper carDtoMapper = new ICarDtoMapperImpl();
+
     private CarController carController;
 
     @BeforeEach
     protected void beforeEach() {
         MockitoAnnotations.openMocks(this);
-        carController = new CarController(carProxy, carSeeder);
+        carController = new CarController(carProxy, carSeeder, carDtoMapper);
         carController.setCarView(carView);
     }
 
@@ -88,7 +92,7 @@ public class CarControllerTest {
 
         String response = carController.updateCar();
         assertNotNull(response);
-        assertEquals(response, "Car with id:" + car.getId() + " has been updated correctly");
+        assertEquals(response, "Car with id: " + car.getId() + " has been updated correctly");
     }
 
     @Test
@@ -100,7 +104,7 @@ public class CarControllerTest {
 
         String response = carController.updateCar();
         assertNotNull(response);
-        assertEquals(response, "Something happend during updating");
+        assertEquals(response, "Something happened during updating");
     }
 
     @Test
@@ -111,7 +115,7 @@ public class CarControllerTest {
         when(carProxy.existsById(anyString())).thenReturn(false);
         String response = carController.updateCar();
         assertNotNull(response);
-        assertEquals(response, "A car with this id does not exists");
+        assertEquals(response, "A car with this id does not exist");
     }
 
     @Test
@@ -143,7 +147,7 @@ public class CarControllerTest {
 
         String response = carController.updateCar();
         assertNotNull(response);
-        assertEquals(response, "The plate should not be empty");
+        assertEquals(response, "Plate is not valid, should be like GDP1230, The plate should not be empty");
     }
 
     @Test
@@ -177,7 +181,7 @@ public class CarControllerTest {
 
         String response = carController.saveCar();
         assertNotNull(response);
-        assertEquals(response, "Something happend during saving");
+        assertEquals(response, "Something happened during saving");
     }
 
     @Test
@@ -209,7 +213,7 @@ public class CarControllerTest {
 
         String response = carController.saveCar();
         assertNotNull(response);
-        assertEquals(response, "The plate should not be empty");
+        assertEquals(response, "The plate should not be empty, Plate is not valid, should be like GDP1230");
     }
 
     @Test
@@ -290,7 +294,7 @@ public class CarControllerTest {
 
         String response = carController.selectMainMenuOption(MainMenuOptions.UPDATE_CAR);
         assertNotNull(response);
-        assertEquals(response, "Car with id:" + car.getId() + " has been updated correctly");
+        assertEquals(response, "Car with id: " + car.getId() + " has been updated correctly");
     }
 
     @Test
