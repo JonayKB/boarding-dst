@@ -1,16 +1,12 @@
 package it.dst.garage.controller;
 
-import java.time.Year;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import it.dst.garage.enums.MainMenuOptions;
-import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.mapper.ICarDtoMapper;
 import it.dst.garage.model.Car;
 import it.dst.garage.model.dto.CarDto;

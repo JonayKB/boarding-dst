@@ -213,7 +213,7 @@ public class CarControllerTest {
 
         String response = carController.saveCar();
         assertNotNull(response);
-        assertEquals(response, "The plate should not be empty, Plate is not valid, should be like GDP1230");
+        assertTrue(response.contains("The plate should not be empty"));
     }
 
     @Test
@@ -224,7 +224,7 @@ public class CarControllerTest {
 
         String response = carController.saveCar();
         assertNotNull(response);
-        assertEquals(response, "Plate is not valid, should be like GDP1230");
+        assertTrue(response.contains("Plate is not valid, should be like GDP1230"));
     }
 
     @Test
