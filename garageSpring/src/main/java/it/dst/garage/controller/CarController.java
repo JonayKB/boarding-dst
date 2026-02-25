@@ -2,8 +2,10 @@ package it.dst.garage.controller;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
 import it.dst.garage.enums.MainMenuOptions;
@@ -23,6 +25,7 @@ public class CarController {
     private static final String PROMPT_BRAND = "Write the BRAND: ";
     private static final String PROMPT_ID = "Write the ID: ";
     private static final String ERROR_YEAR_NUMBER = "Year should be a number";
+    private static final int PAGE_SIZE = 5;
     private CarProxy carProxy;
     private CarView carView;
 
@@ -41,18 +44,12 @@ public class CarController {
     public String selectMainMenuOption(MainMenuOptions option) {
         switch (option) {
             case SHOW_CARS:
-                List<Car> cars = carProxy.findAll();
-                if (cars.isEmpty()) {
-                    return "The list is empty";
-                }
-                StringBuilder str = new StringBuilder();
-                cars.stream().forEach(car -> {
-                    str.append(car.toString());
-                    str.append("\n");
-                });
-                return str.toString();
-            case SHOW_CAR:
+                return paginate(0, PAGE_SIZE, page -> carProxy.findAll(page, PAGE_SIZE));
+            case SHOW_CARS_CONSTAINS_BRAND:
+                String brand = carView.prompt("Write the BRAND to filter: ");
+                return paginate(0, PAGE_SIZE, page -> carProxy.findByBrandContaining(brand, page, PAGE_SIZE));
 
+            case SHOW_CAR:
                 Car car = findCarById();
                 return car != null ? car.toString() : "This car does not exist";
             case ADD_CAR:
@@ -147,4 +144,53 @@ public class CarController {
         this.carView = carView;
     }
 
+    private <T> String paginate(int initialPage, int pageSize, Function<Integer, Page<T>> fetcher) {
+        int page = initialPage;
+        boolean browsing = true;
+
+        while (browsing) {
+            Page<T> dataPage = fetcher.apply(page);
+            List<T> content = dataPage.getContent();
+
+            if (content.isEmpty()) {
+                return "No records found.";
+            }
+
+            if (dataPage.getTotalElements() <= pageSize) {
+                return content.stream()
+                        .map(Object::toString)
+                        .collect(java.util.stream.Collectors.joining("\n"));
+            }
+
+            System.out.println(String.format("\n--- Page %d of %d (Total: %d) ---",
+                    dataPage.getNumber() + 1, dataPage.getTotalPages(), dataPage.getTotalElements()));
+
+            content.forEach(item -> System.out.println(item.toString()));
+
+            System.out.println("\nNavigation: [n] Next | [p] Previous | [q] Quit to Menu");
+            String action = carView.prompt("Select action: ").toLowerCase();
+
+            switch (action) {
+                case "n":
+                    if (dataPage.hasNext())
+                        page++;
+                    else
+                        System.out.println(">> You are on the last page.");
+                    break;
+                case "p":
+                    if (dataPage.hasPrevious())
+                        page--;
+                    else
+                        System.out.println(">> You are on the first page.");
+                    break;
+                case "q":
+                    browsing = false;
+                    break;
+                default:
+                    System.out.println(">> Invalid option.");
+                    break;
+            }
+        }
+        return "Returned to main menu.";
+    }
 }

@@ -2,6 +2,8 @@ package it.dst.garage.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import it.dst.garage.exceptions.UnvalidCarException;
@@ -27,11 +29,21 @@ public class CarService {
         return carEntityMapper.toModel(carRepository.findAll());
     }
 
+    public Page<Car> findAll(int page, int size) {
+        return carEntityMapper
+                .toModel(carRepository.findAll(PageRequest.of(page, size)));
+    }
+
+    public Page<Car> findByBrandContaining(String brand, int page, int size) {
+        return carEntityMapper
+                .toModel(carRepository.findByBrandContaining(brand, PageRequest.of(page, size)));
+    }
+
     public Car findById(String id) {
         return carEntityMapper.toModel(carRepository.findById(id));
     }
 
-    public boolean save(Car car)  {
+    public boolean save(Car car) {
         return carRepository.save(carEntityMapper.toEntity(car));
 
     }

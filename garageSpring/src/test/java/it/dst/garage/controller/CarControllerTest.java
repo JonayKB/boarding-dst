@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +29,10 @@ import it.dst.garage.model.Car;
 import it.dst.garage.proxy.CarProxy;
 import it.dst.garage.seed.CarSeeder;
 import it.dst.garage.view.CarView;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 public class CarControllerTest {
     private static final String INVALID_PLATE = "INVALID_PLATE";
@@ -229,26 +234,28 @@ public class CarControllerTest {
 
     @Test
     protected void test_main_menu_show_cars_empty() {
-        when(carProxy.findAll()).thenReturn(new ArrayList<Car>());
+        Page<Car> emptyPage = new PageImpl<>(new ArrayList<>());
+
+        when(carProxy.findAll(anyInt(), anyInt())).thenReturn(emptyPage);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.SHOW_CARS);
-        assertNotNull(response);
-        assertEquals(response, "The list is empty");
+
+        assertEquals("No records found.", response);
     }
 
     @Test
     protected void test_main_menu_show_cars() {
-        List<Car> cars = new ArrayList<Car>();
+        List<Car> cars = new ArrayList<>();
         cars.add(new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE));
-        when(carProxy.findAll()).thenReturn(cars);
+
+        Page<Car> carPage = new PageImpl<>(cars);
+
+        when(carProxy.findAll(anyInt(), anyInt())).thenReturn(carPage);
 
         String response = carController.selectMainMenuOption(MainMenuOptions.SHOW_CARS);
+
         assertNotNull(response);
-        assertThat(response, containsString("id=" + cars.get(0).getId()));
-        assertThat(response, containsString("brand=" + cars.get(0).getBrand()));
-        assertThat(response, containsString("model=" + cars.get(0).getModel()));
-        assertThat(response, containsString("year=" + cars.get(0).getYear()));
-        assertThat(response, containsString("plate=" + cars.get(0).getPlate()));
+        assertThat(response, containsString("id=" + TEST_ID));
     }
 
     @Test

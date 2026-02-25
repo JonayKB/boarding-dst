@@ -4,6 +4,8 @@ import it.dst.garage.model.Car;
 import it.dst.garage.service.CarService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +23,12 @@ public class CarProxy {
         return cars;
     }
 
+    public Page<Car> findAll(int page, int size) {
+        Page<Car> cars = carService.findAll(page, size);
+        log.info("FindAll with pagination: Found {} cars on page {}", cars.getNumberOfElements(), page);
+        return cars;
+    }
+
     public Car findById(String id) {
         Car car = carService.findById(id);
         if (car == null) {
@@ -29,6 +37,12 @@ public class CarProxy {
             log.info("FindById: Found car with id {}", car.getId());
         }
         return car;
+    }
+
+    public Page<Car> findByBrandContaining(String brand, int page, int size) {
+        Page<Car> cars = carService.findByBrandContaining(brand, page, size);
+        log.info("FindByBrandContaining: Found {} cars containing brand '{}'", cars.getNumberOfElements(), brand);
+        return cars;
     }
 
     public boolean save(Car car) {

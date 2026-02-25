@@ -12,5 +12,33 @@
         "model": "Model 3",
         "year": 2023,
         "plate": "EV999ZZ"
+    },
+    {
+        "id": "C3",
+        "brand": "Ford",
+        "model": "Mustang",
+        "year": 2021,
+        "plate": "MUS123XY"
+    },
+    {
+        "id": "C4",
+        "brand": "Toyota",
+        "model": "Corolla",
+        "year": 2020,
+        "plate": "COR456CD"
+    },
+    {
+        "id": "C5",
+        "brand": "BMW",
+        "model": "X5",
+        "year": 2022,
+        "plate": "BMW789EF"
+    },
+    {
+        "id": "C6",
+        "brand": "Audi",
+        "model": "A4",
+        "year": 2023,
+        "plate": "AUD321GH"
     }
 ]
