@@ -15,7 +15,7 @@ public class GarageApplication implements CommandLineRunner {
 
     @Autowired
     private CarView carView;
-    
+
     @Autowired
     private Environment env;
 
@@ -24,9 +24,9 @@ public class GarageApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         boolean isTest = Arrays.asList(env.getActiveProfiles()).contains("test");
-        
+
         if (!isTest) {
             carView.mainMenu();
         }

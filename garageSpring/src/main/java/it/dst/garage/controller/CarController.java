@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
 import it.dst.garage.enums.MainMenuOptions;
+import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.mapper.ICarDtoMapper;
 import it.dst.garage.model.Car;
 import it.dst.garage.model.dto.CarDto;
@@ -97,9 +98,13 @@ public class CarController {
             return validationError;
         }
 
-        return carProxy.save(carDtoMapper.toModel(car))
-                ? "Car with id: " + car.getId() + " has been saved correctly"
-                : "Something happened during saving";
+        try {
+            return carProxy.save(carDtoMapper.toModel(car))
+                    ? "Car with id: " + car.getId() + " has been saved correctly"
+                    : "Something happened during saving";
+        } catch (UnvalidCarException e) {
+            return e.getMessage();
+        }
     }
 
     protected String updateCar() {
@@ -125,9 +130,14 @@ public class CarController {
             return validationError;
         }
 
-        return carProxy.update(carDtoMapper.toModel(car))
-                ? "Car with id: " + car.getId() + " has been updated correctly"
-                : "Something happened during updating";
+        try {
+            return carProxy.update(carDtoMapper.toModel(car))
+                    ? "Car with id: " + car.getId() + " has been updated correctly"
+                    : "Something happened during updating";
+        } catch (UnvalidCarException e) {
+            return e.getMessage();
+        }
+
     }
 
     protected boolean deleteCar() {

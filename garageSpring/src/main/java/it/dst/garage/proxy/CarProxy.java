@@ -1,5 +1,6 @@
 package it.dst.garage.proxy;
 
+import it.dst.garage.exceptions.UnvalidCarException;
 import it.dst.garage.model.Car;
 import it.dst.garage.service.CarService;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,7 @@ public class CarProxy {
         return cars;
     }
 
-    public boolean save(Car car) {
+    public boolean save(Car car) throws UnvalidCarException {
         boolean status = carService.save(car);
         if (status) {
             log.info("Save: Successfully saved car with id {}", car.getId());
@@ -55,7 +56,7 @@ public class CarProxy {
         return status;
     }
 
-    public boolean update(Car car) {
+    public boolean update(Car car) throws UnvalidCarException {
         boolean status = carService.update(car);
         if (status) {
             log.info("Update: Successfully updated car with id {}", car.getId());
