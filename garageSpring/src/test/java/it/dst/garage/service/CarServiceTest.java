@@ -75,7 +75,7 @@ public class CarServiceTest {
     protected void test_update_not_exists() throws UnvalidCarException {
         CarEntity carEntity = new CarEntity("ID", "BRAND", "MODEL", 10, "PLACE");
 
-        when(carRepository.existsById(anyString())).thenReturn(false);
+        when(carRepository.existsById(anyString())).thenReturn(true);
         assertFalse(carService.update(carEntityMapper.toModel(carEntity)));
     }
 

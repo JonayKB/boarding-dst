@@ -80,7 +80,6 @@ public class RestCarController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing car", description = "Updates the details of an existing car in the garage")
-
     public ResponseEntity<String> update(@PathVariable String id, @Valid @RequestBody CarDtoNoId carDtoNoId) {
         Car car = carDtoMapper.toModel(new CarDto(id, carDtoNoId.getBrand(), carDtoNoId.getModel(),
                 carDtoNoId.getYear(), carDtoNoId.getPlate()));
