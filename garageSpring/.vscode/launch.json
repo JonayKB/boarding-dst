@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-GarageApplication<garage>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "it.dst.garage.GarageApplication",
+            "projectName": "garage",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

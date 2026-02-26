@@ -14,12 +14,14 @@ public class AuthService {
     private final IUserRepository userRepository;
     private final IUserEntityMapper userEntityMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public AuthService(IUserRepository userRepository, IUserEntityMapper userEntityMapper,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.userEntityMapper = userEntityMapper;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public User signup(String email, String username, String password) {
@@ -31,12 +33,12 @@ public class AuthService {
         return userEntityMapper.toModel(userRepository.save(userEntityMapper.toEntity(user)));
     }
 
-    public boolean login(String email, String password) {
+    public String login(String email, String password) {
         User user = userEntityMapper.toModel(userRepository.findByEmail(email));
-        if (user == null) {
-            throw new UnvalidUserException("User not found");
+        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+            throw new UnvalidUserException("User not found or invalid password");
         }
-        return passwordEncoder.matches(password, user.getPassword());
+        return jwtService.generateToken(user);
     }
 
 }

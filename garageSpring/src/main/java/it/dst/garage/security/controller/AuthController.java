@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.dst.garage.mapper.IUserDtoMapper;
 import it.dst.garage.model.dto.UserDto;
+import it.dst.garage.security.dto.LoginDto;
 import it.dst.garage.security.dto.SignupDto;
 import it.dst.garage.security.service.AuthService;
 import jakarta.validation.Valid;
@@ -37,19 +38,9 @@ public class AuthController {
 
     @PostMapping("/login/")
     @Operation(summary = "User login", description = "Authenticates a user with email and password")
-    public String login() {
-        return "Login successful";
+    public String login(@Valid @RequestBody LoginDto loginDto) {
+        return authService.login(loginDto.email(), loginDto.password());
     }
 
-    @PostMapping("/test/")
-    @Operation(summary = "Test endpoint", description = "A simple test endpoint")
-
-    public String test(Principal principal) {
-        log.info("Testing authentication for user: " + (principal != null ? principal.getName() : "null"));
-        if (principal == null) {
-            return "Test failed: No authenticated user";
-        }
-        return "Test successful for user: " + principal.getName();
-    }
 
 }
