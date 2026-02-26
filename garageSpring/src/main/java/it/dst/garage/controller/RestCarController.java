@@ -58,7 +58,7 @@ public class RestCarController {
 
     @PostMapping("/")
     @Operation(summary = "Add a new car", description = "Adds a new car to the garage")
-    public ResponseEntity<String> save(@Valid @RequestBody CarDtoNoId carDtoNoId) {
+    public ResponseEntity<String> save(@Valid @RequestBody CarDtoNoId carDtoNoId) throws UnvalidCarException {
         String id;
         do {
             id = UUID.randomUUID().toString();
@@ -66,32 +66,27 @@ public class RestCarController {
         Car car = carDtoMapper.toModel(new CarDto(id, carDtoNoId.getBrand(), carDtoNoId.getModel(),
                 carDtoNoId.getYear(), carDtoNoId.getPlate()));
 
-        try {
-            boolean status = carProxy.save(car);
-            if (status) {
-                return ResponseEntity.ok("Car with id: " + car.getId() + " has been saved correctly");
-            } else {
-                return ResponseEntity.status(500).body("Failed to add car");
-            }
-        } catch (UnvalidCarException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        boolean status = carProxy.save(car);
+        if (status) {
+            return ResponseEntity.ok("Car with id: " + car.getId() + " has been saved correctly");
+        } else {
+            return ResponseEntity.status(500).body("Failed to add car");
         }
+
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing car", description = "Updates the details of an existing car in the garage")
-    public ResponseEntity<String> update(@PathVariable String id, @Valid @RequestBody CarDtoNoId carDtoNoId) {
+    public ResponseEntity<String> update(@PathVariable String id, @Valid @RequestBody CarDtoNoId carDtoNoId)
+            throws UnvalidCarException {
         Car car = carDtoMapper.toModel(new CarDto(id, carDtoNoId.getBrand(), carDtoNoId.getModel(),
                 carDtoNoId.getYear(), carDtoNoId.getPlate()));
-        try {
-            boolean status = carProxy.update(car);
-            if (status) {
-                return ResponseEntity.ok("Car with id: " + car.getId() + " has been updated correctly");
-            } else {
-                return ResponseEntity.status(500).body("Failed to update car");
-            }
-        } catch (UnvalidCarException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+
+        boolean status = carProxy.update(car);
+        if (status) {
+            return ResponseEntity.ok("Car with id: " + car.getId() + " has been updated correctly");
+        } else {
+            return ResponseEntity.status(500).body("Failed to update car");
         }
     }
 
