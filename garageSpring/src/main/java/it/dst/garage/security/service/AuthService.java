@@ -1,6 +1,8 @@
 package it.dst.garage.security.service;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import it.dst.garage.mapper.IUserEntityMapper;
@@ -39,6 +41,14 @@ public class AuthService {
             throw new UnvalidUserException("User not found or invalid password");
         }
         return jwtService.generateToken(user);
+    }
+
+    public User getUser(Authentication authentication) {
+        if (authentication == null) {
+            throw new UnvalidUserException("No active user");
+        }
+
+        return userEntityMapper.toModel(userRepository.findByEmail(authentication.getName()));
     }
 
 }

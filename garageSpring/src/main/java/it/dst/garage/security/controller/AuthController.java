@@ -1,7 +1,10 @@
 package it.dst.garage.security.controller;
 
-import java.security.Principal;
+import java.io.IOException;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,7 @@ import it.dst.garage.model.dto.UserDto;
 import it.dst.garage.security.dto.LoginDto;
 import it.dst.garage.security.dto.SignupDto;
 import it.dst.garage.security.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.java.Log;
 
@@ -42,5 +46,21 @@ public class AuthController {
         return authService.login(loginDto.email(), loginDto.password());
     }
 
+    @GetMapping("/user/")
+    @Operation(summary = "Returns user data", description = "Returns user data based on the provided JWT token in the Authorization header")
+    public String getUser(Authentication authentication) {
+        if (authentication == null) {
+            throw new RuntimeException("No active user");
+        }
 
+        return userDtoMapper.toDto(authService.getUser(authentication)).toString();
+    }
+
+    @GetMapping("/login-google")
+    @Operation(summary = "Login with Google", description = "### [CLICK here to login](http://localhost:8080/api/auth/login-google)\n\n"
+            +
+            "Do not use the 'Execute' button below, click on the link above.")
+    public void redirectToGoogle(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/oauth2/authorization/google");
+    }
 }
