@@ -2,6 +2,8 @@ package it.dst.garage.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -57,9 +59,9 @@ public class CarServiceTest {
     protected void test_save_success() throws UnvalidCarException, SQLException {
         CarEntity carEntity = new CarEntity("ID", "BRAND", "MODEL", 10, "PLACE");
 
-        when(carRepository.save(any(CarEntity.class))).thenReturn(true);
+        when(carRepository.save(any(CarEntity.class))).thenReturn(carEntity);
 
-        assertTrue(carService.save(carEntityMapper.toModel(carEntity)));
+        assertNotNull(carService.save(carEntityMapper.toModel(carEntity)));
     }
 
     @Test
@@ -67,8 +69,8 @@ public class CarServiceTest {
         CarEntity carEntity = new CarEntity("ID", "BRAND", "MODEL", 10, "PLACE");
 
         when(carRepository.existsById(anyString())).thenReturn(true);
-        when(carRepository.update(any(CarEntity.class))).thenReturn(true);
-        assertTrue(carService.update(carEntityMapper.toModel(carEntity)));
+        when(carRepository.update(any(CarEntity.class))).thenReturn(carEntity);
+        assertNotNull(carService.update(carEntityMapper.toModel(carEntity)));
     }
 
     @Test
@@ -76,7 +78,7 @@ public class CarServiceTest {
         CarEntity carEntity = new CarEntity("ID", "BRAND", "MODEL", 10, "PLACE");
 
         when(carRepository.existsById(anyString())).thenReturn(true);
-        assertFalse(carService.update(carEntityMapper.toModel(carEntity)));
+        assertNull(carService.update(carEntityMapper.toModel(carEntity)));
     }
 
     @Test

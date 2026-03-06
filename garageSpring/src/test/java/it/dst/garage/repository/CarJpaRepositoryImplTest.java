@@ -29,9 +29,10 @@ class CarJpaRepositoryImplTest {
 
         when(internalJpaRepository.save(car)).thenReturn(car);
 
-        boolean result = carRepository.save(car);
+        CarEntity result = carRepository.save(car);
 
-        assertTrue(result);
+        assertNotNull(result);
+        assertEquals(car, result);
         verify(internalJpaRepository, times(1)).save(car);
     }
 
@@ -42,9 +43,9 @@ class CarJpaRepositoryImplTest {
 
         when(internalJpaRepository.existsById("NOT_FOUND")).thenReturn(false);
 
-        boolean result = carRepository.update(car);
+        CarEntity result = carRepository.update(car);
 
-        assertFalse(result);
+        assertNull(result);
         verify(internalJpaRepository, never()).save(any());
     }
 
@@ -88,9 +89,10 @@ class CarJpaRepositoryImplTest {
         when(internalJpaRepository.existsById("123")).thenReturn(true);
         when(internalJpaRepository.save(car)).thenReturn(car);
 
-        boolean result = carRepository.update(car);
+        CarEntity result = carRepository.update(car);
 
-        assertTrue(result);
+        assertNotNull(result);
+        assertEquals(car, result);
         verify(internalJpaRepository, times(1)).save(car);
     }
 

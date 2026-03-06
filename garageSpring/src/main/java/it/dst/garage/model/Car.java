@@ -20,6 +20,22 @@ public class Car {
 
     private String plate;
 
+    private String createdBy;
+
+    private String modifiedBy;
+
+    private long createdAt;
+
+    private long modifiedAt;
+
+    public Car(String id, String brand, String model, int year, String plate) {
+        this.id = id;
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
+        this.plate = plate;
+    }
+
     @Override
     public String toString() {
         return "Car [id=" + id + ", brand=" + brand + ", model=" + model + ", year=" + year + ", plate=" + plate + "]";

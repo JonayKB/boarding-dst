@@ -2,6 +2,7 @@ package it.dst.garage.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -89,7 +90,7 @@ public class RestControllerTest {
         CarDtoNoId carDtoNoId = new CarDtoNoId("", "Altima", 2021, "GH3456");
         when(carProxy.existsById(any())).thenReturn(false);
         when(carProxy.save(any())).thenThrow(new UnvalidCarException("Car has not unique id"));
-        assertEquals(400, restCarController.save(carDtoNoId).getStatusCode().value());
+        assertThrows(UnvalidCarException.class, () -> restCarController.save(carDtoNoId));
     }
 
     @Test
@@ -111,7 +112,7 @@ public class RestControllerTest {
     void test_update_unvalid() throws UnvalidCarException {
         CarDtoNoId carDtoNoId = new CarDtoNoId("", "Altima", 2021, "GH3456");
         when(carProxy.update(any())).thenThrow(new UnvalidCarException("Car has not unique id"));
-        assertEquals(400, restCarController.update("1", carDtoNoId).getStatusCode().value());
+        assertThrows(UnvalidCarException.class, () -> restCarController.update("1", carDtoNoId));
     }
 
     @Test

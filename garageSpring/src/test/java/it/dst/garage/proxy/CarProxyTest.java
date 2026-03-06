@@ -65,28 +65,28 @@ public class CarProxyTest {
     @Test
     protected void test_save_success() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carService.save(any(Car.class))).thenReturn(true);
+        when(carService.save(any(Car.class))).thenReturn(car);
         assertTrue(carProxy.save(car));
     }
 
     @Test
     protected void test_save_error() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carService.save(any(Car.class))).thenReturn(false);
+        when(carService.save(any(Car.class))).thenReturn(null);
         assertFalse(carProxy.save(car));
     }
 
     @Test
     protected void test_update_success() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carService.update(any(Car.class))).thenReturn(true);
+        when(carService.update(any(Car.class))).thenReturn(car);
         assertTrue(carProxy.update(car));
     }
 
     @Test
     protected void test_update_error() throws UnvalidCarException {
         Car car = new Car(TEST_ID, TEST_BRAND, TEST_MODEL, TEST_YEAR, TEST_PLATE);
-        when(carService.update(any(Car.class))).thenReturn(false);
+        when(carService.update(any(Car.class))).thenReturn(null);
         assertFalse(carProxy.update(car));
     }
 

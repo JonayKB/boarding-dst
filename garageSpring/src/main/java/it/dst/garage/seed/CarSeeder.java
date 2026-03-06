@@ -58,8 +58,8 @@ public class CarSeeder {
 
                 if (!carRepository.existsById(id)) {
 
-                    if (carRepository.save(carEntityMapper.toEntity(car))) {
-                        LOG.info("Added succefuly car with id: " + car.getId());
+                    if (carRepository.save(carEntityMapper.toEntity(car)) != null) {
+                        LOG.info("Added successfully car with id: " + car.getId());
                     } else {
                         LOG.error("Failed to add car with id: " + car.getId());
                     }

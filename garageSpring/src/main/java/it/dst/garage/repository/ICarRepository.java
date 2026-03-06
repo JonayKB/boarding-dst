@@ -14,9 +14,9 @@ public interface ICarRepository {
 
     public CarEntity findById(String id);
 
-    public boolean save(CarEntity car);
+    public CarEntity save(CarEntity car);
 
-    public boolean update(CarEntity car);
+    public CarEntity update(CarEntity car);
 
     public boolean deleteById(String id);
 

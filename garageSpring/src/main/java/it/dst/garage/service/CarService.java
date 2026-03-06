@@ -43,19 +43,19 @@ public class CarService {
         return carEntityMapper.toModel(carRepository.findById(id));
     }
 
-    public boolean save(Car car) throws UnvalidCarException {
+    public Car save(Car car) throws UnvalidCarException {
         if (carRepository.existsById(car.getId())) {
             throw new UnvalidCarException("Car with id " + car.getId() + " already exists");
         }
-        return carRepository.save(carEntityMapper.toEntity(car));
+        return carEntityMapper.toModel(carRepository.save(carEntityMapper.toEntity(car)));
 
     }
 
-    public boolean update(Car car) throws UnvalidCarException {
+    public Car update(Car car) throws UnvalidCarException {
         if (!carRepository.existsById(car.getId())) {
             throw new UnvalidCarException("Car with id " + car.getId() + " does not exist");
         }
-        return carRepository.update(carEntityMapper.toEntity(car));
+        return carEntityMapper.toModel(carRepository.update(carEntityMapper.toEntity(car)));
     }
 
     public boolean delete(String id) {

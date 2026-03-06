@@ -28,16 +28,16 @@ public class CarJpaRepositoryImpl implements ICarRepository {
     }
 
     @Override
-    public boolean save(CarEntity car) {
-        return carJpaRepository.save(car) != null;
+    public CarEntity save(CarEntity car) {
+        return carJpaRepository.save(car);
     }
 
     @Override
-    public boolean update(CarEntity car) {
+    public CarEntity update(CarEntity car) {
         if (!carJpaRepository.existsById(car.getId())) {
-            return false;
+            return null;
         }
-        return carJpaRepository.save(car) != null;
+        return carJpaRepository.save(car);
     }
 
     @Override
