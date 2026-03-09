@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,8 @@ public class CarProxy {
         return cars;
     }
 
-    public Page<Car> findAll(int page, int size) {
-        Page<Car> cars = carService.findAll(page, size);
+    public Page<Car> findAll(int page, int size, java.util.Map<String, Object> filters, Sort sortOptions) {
+        Page<Car> cars = carService.findAll(page, size, filters, sortOptions);
         log.info("FindAll with pagination: Found {} cars on page {}", cars.getNumberOfElements(), page);
         return cars;
     }

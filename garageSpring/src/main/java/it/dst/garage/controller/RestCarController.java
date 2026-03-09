@@ -10,15 +10,21 @@ import it.dst.garage.mapper.ICarDtoMapper;
 import it.dst.garage.model.Car;
 import it.dst.garage.model.dto.CarDto;
 import it.dst.garage.model.dto.CarDtoNoId;
+import it.dst.garage.model.request.CarFilterRequest;
+import it.dst.garage.model.request.CarSortRequest;
 import it.dst.garage.proxy.CarProxy;
 import jakarta.validation.Valid;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,8 +47,12 @@ public class RestCarController {
 
     @GetMapping("/")
     @Operation(summary = "Get all cars with pagination", description = "Returns a paginated list of cars in the garage")
-    public ResponseEntity<Page<CarDto>> findAll(@RequestParam(defaultValue = "0") Integer page) {
-        Page<Car> cars = carProxy.findAll(page, PAGE_SIZE);
+    public ResponseEntity<Page<CarDto>> findAll(
+            @RequestParam(defaultValue = "0") Integer page,
+            @ModelAttribute CarFilterRequest filterRequest,
+            @ModelAttribute CarSortRequest sortRequest) {
+
+        Page<Car> cars = carProxy.findAll(page, PAGE_SIZE, filterRequest.toFilterMap(), sortRequest.toSort());
         return ResponseEntity.ok(cars.map(carDtoMapper::toDto));
     }
 

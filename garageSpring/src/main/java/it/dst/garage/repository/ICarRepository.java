@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import it.dst.garage.model.entity.CarEntity;
 
 public interface ICarRepository {
     public List<CarEntity> findAll();
 
-    public Page<CarEntity> findAll(Pageable pageable);
+    public Page<CarEntity> findAll(Pageable pageable, Specification<CarEntity> spec);
 
     public CarEntity findById(String id);
 
