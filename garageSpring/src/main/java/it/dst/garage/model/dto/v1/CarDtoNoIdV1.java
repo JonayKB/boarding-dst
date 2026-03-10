@@ -1,4 +1,4 @@
-package it.dst.garage.model.dto;
+package it.dst.garage.model.dto.v1;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CarDtoNoId {
+public class CarDtoNoIdV1{
 
     @NotBlank(message = "Write the BRAND")
     private String brand;

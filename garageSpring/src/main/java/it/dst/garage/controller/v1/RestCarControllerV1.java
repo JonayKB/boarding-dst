@@ -1,4 +1,4 @@
-package it.dst.garage.controller;
+package it.dst.garage.controller.v1;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -6,21 +6,18 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.dst.garage.exceptions.UnvalidCarException;
-import it.dst.garage.mapper.ICarDtoMapper;
+import it.dst.garage.mapper.v1.ICarDtoV1Mapper;
 import it.dst.garage.model.Car;
-import it.dst.garage.model.dto.CarDto;
-import it.dst.garage.model.dto.CarDtoNoId;
+import it.dst.garage.model.dto.v1.CarDtoNoIdV1;
+import it.dst.garage.model.dto.v1.CarDtoV1;
 import it.dst.garage.model.request.CarFilterRequest;
 import it.dst.garage.model.request.CarSortRequest;
 import it.dst.garage.proxy.CarProxy;
 import jakarta.validation.Valid;
 
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,22 +29,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/api/cars")
+@RequestMapping("/api/v1/cars")
 @Tag(name = "Car API", description = "Endpoints for managing cars in the garage")
-public class RestCarController {
+public class RestCarControllerV1 {
 
     private CarProxy carProxy;
     private static final int PAGE_SIZE = 5;
-    private ICarDtoMapper carDtoMapper;
+    private ICarDtoV1Mapper carDtoMapper;
 
-    public RestCarController(CarProxy carProxy, ICarDtoMapper carDtoMapper) {
+    public RestCarControllerV1(CarProxy carProxy, ICarDtoV1Mapper carDtoMapper) {
         this.carProxy = carProxy;
         this.carDtoMapper = carDtoMapper;
     }
 
     @GetMapping("/")
     @Operation(summary = "Get all cars with pagination", description = "Returns a paginated list of cars in the garage")
-    public ResponseEntity<Page<CarDto>> findAll(
+    public ResponseEntity<Page<CarDtoV1>> findAll(
             @RequestParam(defaultValue = "0") Integer page,
             @ModelAttribute CarFilterRequest filterRequest,
             @ModelAttribute CarSortRequest sortRequest) {
@@ -58,7 +55,7 @@ public class RestCarController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a car by ID", description = "Returns a car in the garage with the given ID")
-    public ResponseEntity<CarDto> findById(@PathVariable String id) {
+    public ResponseEntity<CarDtoV1> findById(@PathVariable String id) {
         Car car = carProxy.findById(id);
         if (car == null) {
             return ResponseEntity.notFound().build();
@@ -68,12 +65,12 @@ public class RestCarController {
 
     @PostMapping("/")
     @Operation(summary = "Add a new car", description = "Adds a new car to the garage")
-    public ResponseEntity<String> save(@Valid @RequestBody CarDtoNoId carDtoNoId) throws UnvalidCarException {
+    public ResponseEntity<String> save(@Valid @RequestBody CarDtoNoIdV1 carDtoNoId) throws UnvalidCarException {
         String id;
         do {
             id = UUID.randomUUID().toString();
         } while (carProxy.existsById(id));
-        Car car = carDtoMapper.toModel(new CarDto(id, carDtoNoId.getBrand(), carDtoNoId.getModel(),
+        Car car = carDtoMapper.toModel(new CarDtoV1(id, carDtoNoId.getBrand(), carDtoNoId.getModel(),
                 carDtoNoId.getYear(), carDtoNoId.getPlate()));
 
         boolean status = carProxy.save(car);
@@ -87,9 +84,9 @@ public class RestCarController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing car", description = "Updates the details of an existing car in the garage")
-    public ResponseEntity<String> update(@PathVariable String id, @Valid @RequestBody CarDtoNoId carDtoNoId)
+    public ResponseEntity<String> update(@PathVariable String id, @Valid @RequestBody CarDtoNoIdV1 carDtoNoId)
             throws UnvalidCarException {
-        Car car = carDtoMapper.toModel(new CarDto(id, carDtoNoId.getBrand(), carDtoNoId.getModel(),
+        Car car = carDtoMapper.toModel(new CarDtoV1(id, carDtoNoId.getBrand(), carDtoNoId.getModel(),
                 carDtoNoId.getYear(), carDtoNoId.getPlate()));
 
         boolean status = carProxy.update(car);

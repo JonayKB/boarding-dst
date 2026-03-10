@@ -23,8 +23,8 @@ import org.mockito.MockitoAnnotations;
 
 import it.dst.garage.enums.MainMenuOptions;
 import it.dst.garage.exceptions.UnvalidCarException;
-import it.dst.garage.mapper.ICarDtoMapper;
-import it.dst.garage.mapper.ICarDtoMapperImpl;
+import it.dst.garage.mapper.v1.ICarDtoMapper;
+import it.dst.garage.mapper.v1.ICarDtoMapperImpl;
 import it.dst.garage.model.Car;
 import it.dst.garage.proxy.CarProxy;
 import it.dst.garage.seed.CarSeeder;

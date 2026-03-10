@@ -1,4 +1,4 @@
-package it.dst.garage.model.dto;
+package it.dst.garage.model.dto.v1;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CarDto {
+public class CarDtoV1 {
     @NotBlank(message = "Write the ID")
     private String id;
 
@@ -49,7 +49,7 @@ public class CarDto {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        CarDto other = (CarDto) obj;
+        CarDtoV1 other = (CarDtoV1) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

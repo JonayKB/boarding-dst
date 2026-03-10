@@ -16,16 +16,17 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+import it.dst.garage.controller.v1.RestCarControllerV1;
 import it.dst.garage.exceptions.UnvalidCarException;
-import it.dst.garage.mapper.ICarDtoMapper;
-import it.dst.garage.mapper.ICarDtoMapperImpl;
+import it.dst.garage.mapper.v1.ICarDtoMapper;
+import it.dst.garage.mapper.v1.ICarDtoMapperImpl;
 import it.dst.garage.model.Car;
-import it.dst.garage.model.dto.CarDto;
-import it.dst.garage.model.dto.CarDtoNoId;
+import it.dst.garage.model.dto.v1.CarDto;
+import it.dst.garage.model.dto.v1.CarDtoNoId;
 import it.dst.garage.proxy.CarProxy;
 
 public class RestControllerTest {
-    private RestCarController restCarController;
+    private RestCarControllerV1 restCarController;
     @Mock
     private CarProxy carProxy;
     private ICarDtoMapper carDtoMapper = new ICarDtoMapperImpl();
@@ -39,7 +40,7 @@ public class RestControllerTest {
     @BeforeEach
     void beforeEach() {
         MockitoAnnotations.openMocks(this);
-        restCarController = new RestCarController(carProxy, carDtoMapper);
+        restCarController = new RestCarControllerV1(carProxy, carDtoMapper);
         car1 = new Car("1", "Toyota", "Corolla", 2020, "AB1234");
         car2 = new Car("2", "Honda", "Civic", 2019, "CD5678");
         car3 = new Car("3", "Ford", "Focus", 2018, "EF9012");
