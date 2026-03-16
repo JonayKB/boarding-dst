@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
 import { CarsView } from './features/CarsView';
 import { LoginView } from './features/LoginView';
-import { SecuredRoute } from './core/guard/AuthGuard';
+import { isAuthenticated, requiredRole } from './core/guard/auth.guard';
+import { ForbiddenView } from './features/ForbiddenView';
+import { AddCarView } from './features/AddCarView';
 
 export const routes: Routes = [
     {
@@ -12,7 +14,16 @@ export const routes: Routes = [
     {
         path: 'cars',
         component: CarsView,
-        canActivate: [SecuredRoute]
+        canActivate: [isAuthenticated()]
+    },
+    {
+        path: 'forbidden',
+        component: ForbiddenView
+    },
+    {
+        path:'cars/add',
+        component: AddCarView,
+        canActivate: [isAuthenticated(), requiredRole('ROLE_ADMIN')]
     },
     {
         path: 'login',
