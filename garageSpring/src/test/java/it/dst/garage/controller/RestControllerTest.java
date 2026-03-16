@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -15,21 +16,24 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 
 import it.dst.garage.controller.v1.RestCarControllerV1;
 import it.dst.garage.exceptions.UnvalidCarException;
-import it.dst.garage.mapper.v1.ICarDtoMapper;
-import it.dst.garage.mapper.v1.ICarDtoMapperImpl;
+import it.dst.garage.mapper.v1.ICarDtoV1Mapper;
+import it.dst.garage.mapper.v1.ICarDtoV1MapperImpl;
 import it.dst.garage.model.Car;
-import it.dst.garage.model.dto.v1.CarDto;
-import it.dst.garage.model.dto.v1.CarDtoNoId;
+import it.dst.garage.model.dto.v1.CarDtoV1;
+import it.dst.garage.model.request.CarFilterRequest;
+import it.dst.garage.model.request.CarSortRequest;
+import it.dst.garage.model.dto.v1.CarDtoNoIdV1;
 import it.dst.garage.proxy.CarProxy;
 
-public class RestControllerTest {
+class RestControllerTest {
     private RestCarControllerV1 restCarController;
     @Mock
     private CarProxy carProxy;
-    private ICarDtoMapper carDtoMapper = new ICarDtoMapperImpl();
+    private ICarDtoV1Mapper carDtoMapper = new ICarDtoV1MapperImpl();
 
     private Car car1;
     private Car car2;
@@ -50,10 +54,10 @@ public class RestControllerTest {
 
     @Test
     void test_findAll() {
-        when(carProxy.findAll(anyInt(), anyInt())).thenReturn(cars);
-        Page<CarDto> resultPage = restCarController.findAll(0).getBody();
+        when(carProxy.findAll(anyInt(), anyInt(), anyMap(), any(Sort.class))).thenReturn(cars);
+        Page<CarDtoV1> resultPage = restCarController.findAll(0, new CarFilterRequest(), new CarSortRequest()).getBody();
         assertNotNull(resultPage);
-        List<CarDto> result = resultPage.getContent();
+        List<CarDtoV1> result = resultPage.getContent();
         assertNotNull(result);
         assertEquals(3, result.size());
         assertEquals("Toyota", result.get(0).getBrand());
@@ -64,7 +68,7 @@ public class RestControllerTest {
     @Test
     void test_findById() {
         when(carProxy.findById("1")).thenReturn(car1);
-        CarDto result = restCarController.findById("1").getBody();
+        CarDtoV1 result = restCarController.findById("1").getBody();
         assertNotNull(result);
         assertEquals("Toyota", result.getBrand());
         assertEquals("Corolla", result.getModel());
@@ -80,7 +84,7 @@ public class RestControllerTest {
 
     @Test
     void test_save() throws UnvalidCarException {
-        CarDtoNoId carDtoNoId = new CarDtoNoId("Nissan", "Altima", 2021, "GH3456");
+        CarDtoNoIdV1 carDtoNoId = new CarDtoNoIdV1("Nissan", "Altima", 2021, "GH3456");
         when(carProxy.existsById(any())).thenReturn(false);
         when(carProxy.save(any())).thenReturn(true);
         assertEquals(200, restCarController.save(carDtoNoId).getStatusCode().value());
@@ -88,7 +92,7 @@ public class RestControllerTest {
 
     @Test
     void test_save_unvalid() throws UnvalidCarException {
-        CarDtoNoId carDtoNoId = new CarDtoNoId("", "Altima", 2021, "GH3456");
+        CarDtoNoIdV1 carDtoNoId = new CarDtoNoIdV1("", "Altima", 2021, "GH3456");
         when(carProxy.existsById(any())).thenReturn(false);
         when(carProxy.save(any())).thenThrow(new UnvalidCarException("Car has not unique id"));
         assertThrows(UnvalidCarException.class, () -> restCarController.save(carDtoNoId));
@@ -96,7 +100,7 @@ public class RestControllerTest {
 
     @Test
     void test_save_internalError() throws UnvalidCarException {
-        CarDtoNoId carDtoNoId = new CarDtoNoId("Nissan", "Altima", 2021, "GH3456");
+        CarDtoNoIdV1 carDtoNoId = new CarDtoNoIdV1("Nissan", "Altima", 2021, "GH3456");
         when(carProxy.existsById(any())).thenReturn(false);
         when(carProxy.save(any())).thenReturn(false);
         assertEquals(500, restCarController.save(carDtoNoId).getStatusCode().value());
@@ -104,21 +108,21 @@ public class RestControllerTest {
 
     @Test
     void test_update() throws UnvalidCarException {
-        CarDtoNoId carDtoNoId = new CarDtoNoId("Nissan", "Altima", 2021, "GH3456");
+        CarDtoNoIdV1 carDtoNoId = new CarDtoNoIdV1("Nissan", "Altima", 2021, "GH3456");
         when(carProxy.update(any())).thenReturn(true);
         assertEquals(200, restCarController.update("1", carDtoNoId).getStatusCode().value());
     }
 
     @Test
     void test_update_unvalid() throws UnvalidCarException {
-        CarDtoNoId carDtoNoId = new CarDtoNoId("", "Altima", 2021, "GH3456");
+        CarDtoNoIdV1 carDtoNoId = new CarDtoNoIdV1("", "Altima", 2021, "GH3456");
         when(carProxy.update(any())).thenThrow(new UnvalidCarException("Car has not unique id"));
         assertThrows(UnvalidCarException.class, () -> restCarController.update("1", carDtoNoId));
     }
 
     @Test
     void test_update_internalError() throws UnvalidCarException {
-        CarDtoNoId carDtoNoId = new CarDtoNoId("Nissan", "Altima", 2021, "GH3456");
+        CarDtoNoIdV1 carDtoNoId = new CarDtoNoIdV1("Nissan", "Altima", 2021, "GH3456");
         when(carProxy.update(any())).thenReturn(false);
         assertEquals(500, restCarController.update("1", carDtoNoId).getStatusCode().value());
     }

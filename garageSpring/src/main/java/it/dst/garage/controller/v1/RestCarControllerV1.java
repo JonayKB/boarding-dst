@@ -53,7 +53,7 @@ public class RestCarControllerV1 {
         return ResponseEntity.ok(cars.map(carDtoMapper::toDto));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     @Operation(summary = "Get a car by ID", description = "Returns a car in the garage with the given ID")
     public ResponseEntity<CarDtoV1> findById(@PathVariable String id) {
         Car car = carProxy.findById(id);
@@ -82,7 +82,7 @@ public class RestCarControllerV1 {
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/")
     @Operation(summary = "Update an existing car", description = "Updates the details of an existing car in the garage")
     public ResponseEntity<String> update(@PathVariable String id, @Valid @RequestBody CarDtoNoIdV1 carDtoNoId)
             throws UnvalidCarException {
@@ -97,7 +97,7 @@ public class RestCarControllerV1 {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/")
     @Operation(summary = "Delete a car", description = "Deletes a car from the garage with the given ID")
     public ResponseEntity<String> delete(@PathVariable String id) {
         boolean status = carProxy.delete(id);
