@@ -1,0 +1,61 @@
+<div>
+    <form [formGroup]="createCarForm" (ngSubmit)="createCar()">
+
+        <div>
+            <label for="brand">Brand:</label>
+            <input id="brand" type="text" formControlName="brand" />
+            @if (createCarForm.get('brand')?.invalid && createCarForm.get('brand')?.touched) {
+            @if (createCarForm.get('brand')?.hasError('required')) {
+            <p class="error">Brand is required.</p>
+            }
+            }
+        </div>
+
+        <div>
+            <label for="model">Model:</label>
+            <input id="model" type="text" formControlName="model" />
+            @if (createCarForm.get('model')?.invalid && createCarForm.get('model')?.touched) {
+            @if (createCarForm.get('model')?.hasError('required')) {
+            <p class="error">Model is required.</p>
+            }
+            }
+        </div>
+
+        <div>
+            <label for="plate">Plate:</label>
+            <input id="plate" type="text" formControlName="plate" />
+            @if (createCarForm.get('plate')?.invalid && createCarForm.get('plate')?.touched) {
+            @if (createCarForm.get('plate')?.hasError('required')) {
+            <p class="error">Plate is required.</p>
+            }
+            @if (createCarForm.get('plate')?.hasError('pattern')) {
+            <p class="error">Plate format must be ABC1234.</p>
+            }
+            }
+        </div>
+
+        <div>
+            <label for="year">Year:</label>
+            <input id="year" type="number" formControlName="year" />
+            @if (createCarForm.get('year')?.invalid && createCarForm.get('year')?.touched) {
+            @if (createCarForm.get('year')?.hasError('required')) {
+            <p class="error">Year is required.</p>
+            }
+            @if (createCarForm.get('year')?.hasError('min')) {
+            <p class="error">Year must be 1886 or later.</p>
+            }
+            @if (createCarForm.get('year')?.hasError('max')) {
+            <p class="error">Year cannot exceed {{ currentYear }}.</p>
+            }
+            }
+        </div>
+
+        <p *ngIf="errorMessage()" class="error">{{ errorMessage() }}</p>
+
+        <p *ngIf="lastSuccessMessage()">
+            {{lastSuccessMessage()}}
+        </p>
+
+        <button type="submit">Create Car</button>
+    </form>
+</div>

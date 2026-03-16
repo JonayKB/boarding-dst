@@ -1,0 +1,22 @@
+<div>
+    <h1>Get Car by ID</h1>
+    <p *ngIf="errorMessage()" class="error">{{ errorMessage() }}</p>
+
+    <div *ngIf="lastSuccessCar()">
+        <h2>Car Details:</h2>
+        <p><strong>ID:</strong> {{ lastSuccessCar()?.id }}</p>
+        <p><strong>Brand:</strong> {{ lastSuccessCar()?.brand }}</p>
+        <p><strong>Model:</strong> {{ lastSuccessCar()?.model }}</p>
+        <p><strong>Year:</strong> {{ lastSuccessCar()?.year }}</p>
+        <p><strong>Plate:</strong> {{ lastSuccessCar()?.plate }}</p>
+
+        @if (hasRole('ROLE_ADMIN')) {
+            <a [routerLink]="['/cars', lastSuccessCar()?.id, 'edit']">Edit Car</a>
+            <a [routerLink]="['/cars', lastSuccessCar()?.id, 'delete']">Delete Car</a>
+
+        }
+        <a [routerLink]="['/cars']">Back to Car List</a>
+    </div>
+
+
+</div>

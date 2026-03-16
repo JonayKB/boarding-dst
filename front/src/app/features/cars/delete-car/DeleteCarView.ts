@@ -1,0 +1,75 @@
+import { Component, signal } from "@angular/core";
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CarsApiService } from "../../../api/CarsApiService";
+import { CommonModule } from "@angular/common";
+import { ActivatedRoute, Router } from "@angular/router";
+
+@Component({
+    selector: 'app-delete-car',
+    templateUrl: './delete-car-view.html',
+    styleUrl: './delete-car-view.css',
+    imports: [FormsModule, ReactiveFormsModule, CommonModule]
+})
+export class DeleteCarView {
+    errorMessage = signal('');
+    lastSuccessMessage = signal('');
+    currentYear = new Date().getFullYear();
+    showCarForm;
+
+
+
+    constructor(
+        private fb: FormBuilder,
+        private carsApiService: CarsApiService,
+        private route: ActivatedRoute,
+        private router: Router
+    ) {
+        const id = this.route.snapshot.paramMap.get('id')!;
+        this.showCarForm = this.fb.group({
+            carId: [{ value: '', disabled: true }],
+            brand: [{ value: '', disabled: true }, [Validators.required]],
+            model: [{ value: '', disabled: true }, [Validators.required]],
+            year: [{ value: 1886, disabled: true }, [Validators.required, Validators.min(1886), Validators.max(this.currentYear)]],
+            plate: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[A-Z]{3}\d{4}$/)]],
+        });
+
+        carsApiService.getCarById(id).subscribe({
+            next: (car) => {
+                console.log('Car fetched successfully for deleting:', car);
+                this.showCarForm.patchValue({
+                    carId: car.id,
+                    brand: car.brand,
+                    model: car.model,
+                    year: car.year,
+                    plate: car.plate,
+                });
+            },
+            error: (err) => {
+                console.error('Error fetching car for deleting:', err);
+                this.errorMessage.set('Failed to fetch car for deleting.');
+            }
+        });
+    }
+
+    deleteCar() {
+        const carId = this.route.snapshot.paramMap.get('id');
+        if (carId) {
+            this.carsApiService.deleteCar(carId).subscribe({
+                next: (response) => {
+                    console.log('Car deleted successfully:', response);
+                    this.lastSuccessMessage.set(response);
+                    this.errorMessage.set('');
+                    this.router.navigate(['/cars']);
+                },
+                error: (err) => {
+                    console.error('Error deleting car:', err);
+                    this.errorMessage.set('Failed to delete car.');
+                }
+            });
+        }
+    }
+
+    cancelDelete() {
+        this.router.navigate(['/cars/' + this.route.snapshot.paramMap.get('id')]);
+    }
+}

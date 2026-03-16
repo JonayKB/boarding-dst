@@ -1,6 +1,6 @@
 import { Component, signal } from "@angular/core";
-import { AuthService } from "../api/AuthService";
-import { TokenStorageService } from "../stores/TokenStorageService";
+import { AuthService } from "../../../api/AuthService";
+import { TokenStorageService } from "../../../stores/TokenStorageService";
 import { Router } from '@angular/router';
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
@@ -8,7 +8,7 @@ import { FormsModule } from "@angular/forms";
     selector: 'app-login',
     templateUrl: './login-view.html',
     styleUrl: './login-view.css',
-    imports:[FormsModule, CommonModule,]
+    imports: [FormsModule, CommonModule,]
 })
 export class LoginView {
     email = '';

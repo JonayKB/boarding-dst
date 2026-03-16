@@ -1,0 +1,51 @@
+<div>
+    <h1>Cars View</h1>
+
+    <form [formGroup]="filterForm" (ngSubmit)="loadCars(0)">
+        <div>
+            <label>Brand: <input type="text" formControlName="brand" /></label>
+            <label>Model: <input type="text" formControlName="model" /></label>
+            <label>Plate: <input type="text" formControlName="plate" /></label>
+            <label>Year from: <input type="number" formControlName="yearFrom" /></label>
+            <label>Year to: <input type="number" formControlName="yearTo" /></label>
+        </div>
+
+        <div>
+            <label>Sort by:
+                <select formControlName="sortBy">
+                    <option value="">— none —</option>
+                    <option value="brand">Brand</option>
+                    <option value="model">Model</option>
+                    <option value="year">Year</option>
+                    <option value="plate">Plate</option>
+                </select>
+            </label>
+            <label>
+                <input type="checkbox" formControlName="asc" /> Ascending
+            </label>
+        </div>
+
+        <button type="submit">Search</button>
+        <button type="button" (click)="resetFilters()">Reset</button>
+    </form>
+
+    @if (errorMessage()) {
+    <p class="error">{{ errorMessage() }}</p>
+    }
+
+    @if (carsPaginated()) {
+    <ul>
+        @for (car of carsPaginated()!.content; track car.id) {
+        <li>
+            <a [routerLink]="['/cars', car.id]">{{ car.brand }} {{ car.model }} ({{ car.year }}) - {{ car.plate }}</a>
+        </li>
+        }
+    </ul>
+
+    <div>
+        <button (click)="prevPage()" [disabled]="currentPage() === 0">← Prev</button>
+        <span>Page {{ currentPage() + 1 }} of {{ carsPaginated()!.totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage() + 1 >= carsPaginated()!.totalPages">Next →</button>
+    </div>
+    }
+</div>
