@@ -13,9 +13,8 @@ export class CarsApiService {
 
     constructor(private http: HttpClient) { }
 
-    getCars(token: string): Observable<PaginatedResponse<Car>> {
+    getCars(): Observable<PaginatedResponse<Car>> {
         return this.http.get<PaginatedResponse<Car>>(`${this.apiUrl}/v1/cars/`, {
-            headers: { 'Authorization': `Bearer ${token}` },
             params: { page: 0 }
         }).pipe(
             catchError((error) => {
