@@ -1,0 +1,19 @@
+<div>
+    <h1>Cars View</h1>
+    <div *ngIf="!token()">
+    <input type="text" placeholder="Email" [(ngModel)]="email" />
+    <input type="password" placeholder="Password" [(ngModel)]="password" />
+    <button (click)="login()">Login</button>
+    </div>
+    <div *ngIf="token()">
+        <p>Welcome, {{ email() }}!</p>
+        <button (click)="logout()">Logout</button>
+    </div>
+    <p *ngIf="errorMessage()" class="error">{{ errorMessage() }}</p>
+    <button (click)="loadCars()" [disabled]="!token()">Load Cars</button>
+    <ul *ngIf="carsPaginated()">
+        <li *ngFor="let car of carsPaginated()?.content">
+            {{ car.id }} {{ car.model }} ({{ car.year }}): {{ car.plate }}
+        </li>
+    </ul>
+</div>
