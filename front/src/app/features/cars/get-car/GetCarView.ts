@@ -1,5 +1,5 @@
 import { Component, signal } from "@angular/core";
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import {  FormsModule} from "@angular/forms";
 import { CarsApiService } from "../../../api/CarsApiService";
 import { CommonModule } from "@angular/common";
 import { Car } from "../../../types/Car";
@@ -41,7 +41,7 @@ export class GetCarView {
         }
     };
 
-    hasRole(...roles: string[]): boolean {  // 👈
+    hasRole(...roles: string[]): boolean {
         const token = this.tokenStorageService.getToken();
         if (!token) return false;
         try {

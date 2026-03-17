@@ -11,7 +11,7 @@ export class AuthService {
 
     constructor(private http: HttpClient) { }
 
-    login(email: string, password: string): Observable<any> {
+    login(email: string, password: string): Observable<string> {
         return this.http.post(`${this.apiUrl}/auth/login/`, { email, password }, { responseType: 'text' }).pipe(
             catchError((error) => {
                 console.error('Failed to login:', error);

@@ -5,6 +5,8 @@ import { catchError, Observable, } from 'rxjs';
 import { PaginatedResponse } from '../types/PaginatedResponse';
 import { SaveCar } from '../types/SaveCar';
 import { Car } from '../types/Car';
+import { FilterRequest } from '../types/FilterRequest';
+import { SortRequest } from '../types/SortRequest';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +16,7 @@ export class CarsApiService {
 
     constructor(private http: HttpClient) { }
 
-    getCars(page: number = 0, filterRequest?: any, sortRequest?: any): Observable<PaginatedResponse<Car>> {
+    getCars(page: number = 0, filterRequest?: FilterRequest, sortRequest?: SortRequest): Observable<PaginatedResponse<Car>> {
         let params: any = { page };
         if (filterRequest) {
             Object.entries(filterRequest).forEach(([key, value]) => {
@@ -37,7 +39,7 @@ export class CarsApiService {
     }
 
 
-    saveCars(saveCar: SaveCar): Observable<any> {
+    saveCars(saveCar: SaveCar): Observable<string> {
         return this.http.post(`${this.apiUrl}/v1/cars/`, saveCar, { responseType: 'text' }).pipe(
             catchError((error) => {
                 console.error('Failed to save car:', error);
@@ -55,7 +57,7 @@ export class CarsApiService {
         );
     }
 
-    updateCar(id: string, saveCar: SaveCar): Observable<any> {
+    updateCar(id: string, saveCar: SaveCar): Observable<string> {
         return this.http.put(`${this.apiUrl}/v1/cars/${id}/`, saveCar, { responseType: 'text' }).pipe(
             catchError((error) => {
                 console.error(`Failed to update car with id ${id}:`, error);
@@ -64,7 +66,7 @@ export class CarsApiService {
         );
     }
 
-    deleteCar(id: string): Observable<any> {
+    deleteCar(id: string): Observable<string> {
         return this.http.delete(`${this.apiUrl}/v1/cars/${id}/`, { responseType: 'text' }).pipe(
             catchError((error) => {
                 console.error(`Failed to delete car with id ${id}:`, error);

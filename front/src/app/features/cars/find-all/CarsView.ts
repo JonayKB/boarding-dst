@@ -6,6 +6,8 @@ import { PaginatedResponse } from "../../../types/PaginatedResponse";
 import { Car } from "../../../types/Car";
 import { TokenStorageService } from "../../../stores/TokenStorageService";
 import { RouterModule } from "@angular/router";
+import { SortRequest } from "../../../types/SortRequest";
+import { FilterRequest } from "../../../types/FilterRequest";
 
 @Component({
     selector: 'app-cars-view',
@@ -50,12 +52,12 @@ export class CarsView {
             plate: plate || undefined,
             yearFrom: yearFrom || undefined,
             yearTo: yearTo || undefined,
-        };
+        } as FilterRequest;
 
         const sortRequest = {
             sortBy: sortBy || undefined,
             asc: asc ?? true,
-        };
+        } as SortRequest;
 
         this.carsApiService.getCars(page, filterRequest, sortRequest).subscribe({
             next: (data) => {
