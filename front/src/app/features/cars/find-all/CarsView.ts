@@ -36,6 +36,7 @@ export class CarsView {
             sortBy: [''],
             asc: [true],
         });
+        this.loadCars();
     }
 
     loadCars(page: number = 0) {

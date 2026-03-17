@@ -1,7 +1,7 @@
 <div>
     <h1>Cars View</h1>
 
-    <form [formGroup]="filterForm" (ngSubmit)="loadCars(0)">
+    <form [formGroup]="filterForm" (ngSubmit)="loadCars()">
         <div>
             <label>Brand: <input type="text" formControlName="brand" /></label>
             <label>Model: <input type="text" formControlName="model" /></label>
@@ -43,6 +43,10 @@
     </ul>
 
     <div>
+        <span>Total: {{ carsPaginated()!.totalElements }}</span>
+        <span> | </span>
+        <span>Showing {{ carsPaginated()!.content.length }} of {{ carsPaginated()!.totalElements }}</span>
+        <span> | </span>
         <button (click)="prevPage()" [disabled]="currentPage() === 0">← Prev</button>
         <span>Page {{ currentPage() + 1 }} of {{ carsPaginated()!.totalPages }}</span>
         <button (click)="nextPage()" [disabled]="currentPage() + 1 >= carsPaginated()!.totalPages">Next →</button>
