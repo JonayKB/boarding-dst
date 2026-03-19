@@ -20,7 +20,15 @@ export class CarsView {
     carsPaginated = signal<PaginatedResponse<Car> | null>(null);
     currentPage = signal(0);
     filterForm;
+    filtersOpen = true;
 
+    sortOptions = [
+        { label: 'Brand', value: 'brand' },
+        { label: 'Model', value: 'model' },
+        { label: 'Year', value: 'year' },
+        { label: 'Plate', value: 'plate' },
+    ];
+    currentYear = new Date().getFullYear();
 
     constructor(
         private fb: FormBuilder,
@@ -37,6 +45,14 @@ export class CarsView {
             asc: [true],
         });
         this.loadCars();
+    }
+    setSortBy(value: string) {
+        this.filterForm.patchValue({ sortBy: value });
+    }
+
+    toggleAsc() {
+        const current = this.filterForm.get('asc')?.value;
+        this.filterForm.patchValue({ asc: !current });
     }
 
     loadCars(page: number = 0) {

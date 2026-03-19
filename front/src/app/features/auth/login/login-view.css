@@ -1,0 +1,125 @@
+
+:host,
+app-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: var(--space-8) var(--space-4);
+  position: relative;
+}
+
+/* Ambient glow behind card */
+:host::before {
+  content: '';
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Wrapper ────────────────────────────────────────────────── */
+:host > div,
+.login-wrapper {
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Card ───────────────────────────────────────────────────── */
+:host > div,
+.login-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10) var(--space-8);
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top gradient line */
+:host > div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--space-8);
+  right: var(--space-8);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--clr-accent), transparent);
+}
+
+/* ── Heading ────────────────────────────────────────────────── */
+:host h1 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-2);
+  background: linear-gradient(135deg, var(--clr-text) 0%, var(--clr-purple-300) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtitle helper (optional) */
+:host h1 + p {
+  font-size: var(--text-sm);
+  color: var(--clr-text-3);
+  margin-bottom: var(--space-8);
+}
+
+/* ── Form layout ────────────────────────────────────────────── */
+:host form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-top: var(--space-8);
+}
+
+/* Wrap each label+input pair */
+:host form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--clr-text-2);
+}
+
+/* Remove the old <br> visual gap */
+:host br { display: none; }
+
+/* ── Submit button full width ───────────────────────────────── */
+:host button[type="submit"] {
+  width: 100%;
+  padding: var(--space-4);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semi);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-2);
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+}
+
+:host button[type="submit"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ── Error ──────────────────────────────────────────────────── */
+:host .error {
+  animation: shake 0.3s var(--ease-out);
+}
+
+@keyframes shake {
+  0%, 100% { translate: 0; }
+  25%       { translate: -4px 0; }
+  75%       { translate:  4px 0; }
+}

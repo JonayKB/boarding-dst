@@ -1,55 +1,131 @@
-<div>
-    <h1>Cars View</h1>
+<div class="cars-page">
 
-    <form [formGroup]="filterForm" (ngSubmit)="loadCars()">
-        <div>
-            <label>Brand: <input type="text" formControlName="brand" /></label>
-            <label>Model: <input type="text" formControlName="model" /></label>
-            <label>Plate: <input type="text" formControlName="plate" /></label>
-            <label>Year from: <input type="number" formControlName="yearFrom" /></label>
-            <label>Year to: <input type="number" formControlName="yearTo" /></label>
+    <div class="page-header">
+        <h1>Cars
+            @if (carsPaginated()) {
+            <span class="results-count">· {{ carsPaginated()!.totalElements }} results</span>
+            }
+        </h1>
+    </div>
+
+    <div class="filter-panel">
+        <div class="filter-header" (click)="filtersOpen = !filtersOpen">
+            <div class="filter-header-left">
+                <svg class="filter-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M2 4h12M4 8h8M6 12h4" />
+                </svg>
+                <span class="filter-label">Filters</span>
+
+                <div class="filter-tags">
+                    @if (filterForm.get('brand')?.value) {
+                    <span class="filter-tag">Brand: {{ filterForm.get('brand')?.value }}</span>
+                    }
+                    @if (filterForm.get('model')?.value) {
+                    <span class="filter-tag">Model: {{ filterForm.get('model')?.value }}</span>
+                    }
+                    @if (filterForm.get('plate')?.value) {
+                    <span class="filter-tag">Plate: {{ filterForm.get('plate')?.value }}</span>
+                    }
+                    @if (filterForm.get('yearFrom')?.value || filterForm.get('yearTo')?.value) {
+                    <span class="filter-tag">
+                        {{ filterForm.get('yearFrom')?.value || '—' }} – {{ filterForm.get('yearTo')?.value || '—' }}
+                    </span>
+                    }
+                </div>
+            </div>
+
+            <svg class="chevron" [class.open]="filtersOpen" viewBox="0 0 14 14" fill="none" stroke="currentColor"
+                stroke-width="1.5">
+                <path d="M3 5l4 4 4-4" />
+            </svg>
         </div>
 
-        <div>
-            <label>Sort by:
-                <select formControlName="sortBy">
-                    <option value="">— none —</option>
-                    <option value="brand">Brand</option>
-                    <option value="model">Model</option>
-                    <option value="year">Year</option>
-                    <option value="plate">Plate</option>
-                </select>
-            </label>
-            <label>
-                <input type="checkbox" formControlName="asc" /> Ascending
-            </label>
-        </div>
+        <div class="filter-body" [class.open]="filtersOpen">
+            <form [formGroup]="filterForm" (ngSubmit)="loadCars()">
 
-        <button type="submit">Search</button>
-        <button type="button" (click)="resetFilters()">Reset</button>
-    </form>
+                <div class="filter-grid">
+                    <div class="field">
+                        <label for="brand">Brand</label>
+                        <input id="brand" type="text" formControlName="brand" placeholder="e.g. Toyota" />
+                    </div>
+                    <div class="field">
+                        <label for="model">Model</label>
+                        <input id="model" type="text" formControlName="model" placeholder="e.g. Corolla" />
+                    </div>
+                    <div class="field">
+                        <label for="plate">Plate</label>
+                        <input id="plate" type="text" formControlName="plate" placeholder="ABC1234" />
+                    </div>
+                    <div class="field">
+                        <label>Year range</label>
+                        <div class="year-range">
+                            <input type="number" formControlName="yearFrom" placeholder="From" />
+                            <span class="year-sep">—</span>
+                            <input type="number" formControlName="yearTo" placeholder="To" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sort + actions row -->
+                <div class="filter-footer">
+                    <div class="sort-row">
+                        <span class="sort-label">Sort</span>
+                        <div class="sort-pills">
+                            @for (opt of sortOptions; track opt.value) {
+                            <button type="button" class="sort-pill"
+                                [class.active]="filterForm.get('sortBy')?.value === opt.value"
+                                (click)="setSortBy(opt.value)">
+                                {{ opt.label }}
+                            </button>
+                            }
+                        </div>
+                        <button type="button" class="asc-toggle" [class.active]="filterForm.get('asc')?.value"
+                            (click)="toggleAsc()">
+                            <span class="asc-arrow">↑</span>
+                            Asc
+                        </button>
+                    </div>
+
+                    <div class="btn-actions">
+                        <button type="button" class="btn-reset" (click)="resetFilters()">Reset</button>
+                        <button type="submit" class="btn-search">Search</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
 
     @if (errorMessage()) {
     <p class="error">{{ errorMessage() }}</p>
     }
 
     @if (carsPaginated()) {
-    <ul>
+    <ul class="car-list">
         @for (car of carsPaginated()!.content; track car.id) {
         <li>
-            <a [routerLink]="['/cars', car.id]">{{ car.brand }} {{ car.model }} ({{ car.year }}) - {{ car.plate }}</a>
+            <a class="car-item" [routerLink]="['/cars', car.id]">
+                <span class="car-dot"></span>
+                <span class="car-name">{{ car.brand }} {{ car.model }}</span>
+                <span class="car-plate">{{ car.plate }}</span>
+                <span class="car-year">{{ car.year }}</span>
+                <span class="car-arrow">→</span>
+            </a>
         </li>
         }
     </ul>
 
-    <div>
-        <span>Total: {{ carsPaginated()!.totalElements }}</span>
-        <span> | </span>
-        <span>Showing {{ carsPaginated()!.content.length }} of {{ carsPaginated()!.totalElements }}</span>
-        <span> | </span>
-        <button (click)="prevPage()" [disabled]="currentPage() === 0">← Prev</button>
-        <span>Page {{ currentPage() + 1 }} of {{ carsPaginated()!.totalPages }}</span>
-        <button (click)="nextPage()" [disabled]="currentPage() + 1 >= carsPaginated()!.totalPages">Next →</button>
+    <div class="pagination">
+        <span class="pag-info">
+            Showing {{ carsPaginated()!.content.length }} of {{ carsPaginated()!.totalElements }}
+        </span>
+        <div class="pag-controls">
+            <button class="pag-btn" (click)="prevPage()" [disabled]="currentPage() === 0">← Prev</button>
+            <span class="pag-page">Page {{ currentPage() + 1 }} of {{ carsPaginated()!.totalPages }}</span>
+            <button class="pag-btn" (click)="nextPage()"
+                [disabled]="currentPage() + 1 >= carsPaginated()!.totalPages">Next →</button>
+        </div>
     </div>
     }
+
 </div>

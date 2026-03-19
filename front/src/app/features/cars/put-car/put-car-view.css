@@ -1,0 +1,102 @@
+
+:host {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-12) var(--space-4);
+  min-height: calc(100vh - var(--navbar-height));
+}
+
+:host > div {
+  width: 100%;
+  max-width: 520px;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10) var(--space-8);
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+  position: relative;
+  overflow: hidden;
+}
+
+:host > div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--space-8);
+  right: var(--space-8);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--clr-accent), transparent);
+}
+
+:host h1 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-8);
+  background: linear-gradient(135deg, var(--clr-text) 0%, var(--clr-purple-300) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+:host form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+:host form > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+:host label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--clr-text-2);
+}
+
+/* ID field readonly */
+:host input[formControlName="carId"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--clr-bg);
+}
+
+:host button[type="submit"] {
+  width: 100%;
+  padding: var(--space-4);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semi);
+  margin-top: var(--space-2);
+}
+
+/* Back link */
+:host a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--clr-text-3);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  transition: color var(--duration-fast), border-color var(--duration-fast), background var(--duration-fast);
+  margin-top: var(--space-3);
+  text-decoration: none;
+}
+
+:host a:hover {
+  color: var(--clr-text-2);
+  border-color: var(--clr-purple-700);
+  background: var(--clr-accent-soft);
+}
+
+:host p:not(.error) {
+  color: var(--clr-success);
+  font-size: var(--text-sm);
+  background: var(--clr-success-soft);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+}

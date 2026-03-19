@@ -1,0 +1,111 @@
+
+:host {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-12) var(--space-4);
+  min-height: calc(100vh - var(--navbar-height));
+}
+
+:host > div {
+  width: 100%;
+  max-width: 520px;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10) var(--space-8);
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top accent line — rojo para delete */
+:host > div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--space-8);
+  right: var(--space-8);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--clr-error), transparent);
+}
+
+:host h1 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-8);
+  background: linear-gradient(135deg, var(--clr-text) 0%, var(--clr-error) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+:host form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+:host form > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+:host label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--clr-text-2);
+}
+
+/* All fields readonly in delete */
+:host input {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--clr-bg);
+}
+
+/* Confirmation warning */
+:host h3 {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--clr-error);
+  padding: var(--space-4) var(--space-5);
+  background: var(--clr-error-soft);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: var(--radius-md);
+  margin: var(--space-2) 0;
+  font-family: var(--font-body);
+}
+
+/* Confirm (Yes) button — danger style */
+:host button[type="submit"] {
+  width: 100%;
+  padding: var(--space-4);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semi);
+  background: var(--clr-error) !important;
+  box-shadow: 0 2px 12px rgba(248, 113, 113, 0.25) !important;
+  margin-top: var(--space-2);
+}
+
+:host button[type="submit"]:hover {
+  background: #ef4444 !important;
+  box-shadow: 0 4px 20px rgba(248, 113, 113, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+/* Cancel (No) button */
+:host button[type="button"] {
+  width: 100%;
+  padding: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+:host p:not(.error) {
+  color: var(--clr-success);
+  font-size: var(--text-sm);
+  background: var(--clr-success-soft);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+}

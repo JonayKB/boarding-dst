@@ -4,6 +4,7 @@ import { TokenStorageService } from "../../../stores/TokenStorageService";
 import { Router } from '@angular/router';
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { AuthStateService } from "../../../shared/services/AuthStateService";
 @Component({
     selector: 'app-login',
     templateUrl: './login-view.html',
@@ -15,14 +16,14 @@ export class LoginView {
     password = '';
     errorMessage = signal('');
 
-    constructor(private tokenStorageService: TokenStorageService, private authService: AuthService, private router: Router) { }
+    constructor(private authState: AuthStateService, private authService: AuthService, private router: Router) { }
 
     login() {
         this.authService.login(this.email, this.password).subscribe({
             next: (token) => {
                 console.log('Login successful, received token:', token);
                 this.errorMessage.set('');
-                this.tokenStorageService.setToken(token);
+                this.authState.setToken(token);
                 this.router.navigate(['/cars']);
             },
             error: (err) => {

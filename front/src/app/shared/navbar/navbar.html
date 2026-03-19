@@ -1,0 +1,40 @@
+<nav class="navbar">
+
+    <a class="navbar-brand" routerLink="/">
+        <span class="navbar-brand-dot"></span>
+        Cars
+    </a>
+
+    <div class="navbar-links">
+        <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a>
+        <a class="nav-link" routerLink="/cars" routerLinkActive="active">Cars</a>
+    </div>
+
+    <div class="navbar-auth">
+        @if (auth.isLoggedIn()) {
+        <span class="navbar-username">{{ auth.tokenData()?.username }}</span>
+        <button class="btn-logout" (click)="logout()">Logout</button>
+        } @else if (router.url !== '/login' && router.url !== '/signup') {
+        <button class="btn-primary" (click)="login()">Login</button>
+        <button class="btn-ghost" (click)="signup()">Signup</button>
+        }
+    </div>
+
+    <button class="hamburger" (click)="toggleMenu()" [class.open]="menuOpen">
+        <span>A</span>
+    </button>
+
+    <div class="mobile-menu" [class.open]="menuOpen">
+        <a class="nav-link" routerLink="/" (click)="closeMenu()">Home</a>
+        <a class="nav-link" routerLink="/cars" (click)="closeMenu()">Cars</a>
+        <div class="mobile-divider"></div>
+        @if (auth.isLoggedIn()) {
+        <span class="mobile-username">{{ auth.tokenData()?.username }}</span>
+        <button class="btn-logout" (click)="logout()">Logout</button>
+        } @else if (router.url !== '/login' && router.url !== '/signup') {
+        <button class="btn-primary" (click)="login()">Login</button>
+        <button class="btn-ghost" (click)="signup()">Signup</button>
+        }
+    </div>
+
+</nav>
