@@ -7,6 +7,7 @@ import { AddCarView } from './features/cars/add-car/AddCarView';
 import { GetCarView } from './features/cars/get-car/GetCarView';
 import { PutCarView } from './features/cars/put-car/PutCarView';
 import { DeleteCarView } from './features/cars/delete-car/DeleteCarView';
+import { NotFoundView } from './features/auth/not-found/NotFoundView';
 
 export const routes: Routes = [
     {
@@ -46,5 +47,7 @@ export const routes: Routes = [
     {
         path: 'login',
         component: LoginView
-    }
+    },
+    { path: '**', component: NotFoundView }
+
 ];

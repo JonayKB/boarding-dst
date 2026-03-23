@@ -2,6 +2,7 @@ import { Component, signal } from "@angular/core";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CarsApiService } from "../../../api/CarsApiService";
 import { CommonModule } from "@angular/common";
+import { NotificationService } from "../../../shared/services/NotificationService";
 
 @Component({
     selector: 'app-add-car',
@@ -15,7 +16,7 @@ export class AddCarView {
     lastSuccessMessage = signal('');
     currentYear = new Date().getFullYear();
 
-    constructor(private fb: FormBuilder, private carsApiService: CarsApiService) {
+    constructor(private fb: FormBuilder, private carsApiService: CarsApiService, private notificationService: NotificationService) {
         this.createCarForm = this.fb.group({
             brand: ['', [Validators.required]],
             model: ['', [Validators.required]],
@@ -42,6 +43,12 @@ export class AddCarView {
                     console.log('Car saved successfully:', response);
                     this.createCarForm.reset();
                     this.lastSuccessMessage.set(response);
+                    this.notificationService.add({
+                        title: "Success",
+                        message: "Car saved successfully",
+                        type: "success",
+                        duration: 5000,
+                    });
                 },
                 error: (err) => {
                     console.error('Error saving car:', err);

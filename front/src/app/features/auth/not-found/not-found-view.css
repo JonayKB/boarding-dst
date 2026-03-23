@@ -1,0 +1,91 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: var(--space-8);
+}
+
+.not-found {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.not-found-code {
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 18vw, 12rem);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--clr-border);
+  position: relative;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.not-found-code::after {
+  content: '404';
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--clr-purple-700);
+  filter: blur(12px);
+  opacity: 0.6;
+}
+
+.not-found-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 340px;
+}
+
+.not-found-content h1 {
+  font-size: var(--text-3xl);
+  background: linear-gradient(135deg, var(--clr-text) 0%, var(--clr-purple-300) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.not-found-content p {
+  font-size: var(--text-base);
+  color: var(--clr-text-2);
+  line-height: 1.6;
+}
+
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--clr-accent);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  text-decoration: none;
+  width: fit-content;
+  transition: background var(--duration-fast), transform var(--duration-fast) var(--ease-spring);
+  box-shadow: 0 2px 12px var(--clr-accent-glow);
+}
+
+.btn-home::after { content: '→'; }
+
+.btn-home:hover {
+  background: var(--clr-accent-hover);
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .not-found {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-6);
+  }
+
+  .btn-home { align-self: center; }
+}

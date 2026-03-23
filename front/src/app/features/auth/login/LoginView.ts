@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { AuthStateService } from "../../../shared/services/AuthStateService";
+import { NotificationService } from "../../../shared/services/NotificationService";
 @Component({
     selector: 'app-login',
     templateUrl: './login-view.html',
@@ -16,20 +17,21 @@ export class LoginView {
     password = '';
     errorMessage = signal('');
 
-    constructor(private authState: AuthStateService, private authService: AuthService, private router: Router) { }
+    constructor(private authState: AuthStateService, private authService: AuthService, private router: Router, private notificationService: NotificationService) { }
 
     login() {
         this.authService.login(this.email, this.password).subscribe({
             next: (token) => {
-                console.log('Login successful, received token:', token);
                 this.errorMessage.set('');
                 this.authState.setToken(token);
                 this.router.navigate(['/cars']);
+                this.notificationService.add({
+                    title: "Success",
+                    message: "Logged in successfully",
+                    type: "success",
+                    duration: 5000,
+                });
             },
-            error: (err) => {
-                console.error('Login failed:', err);
-                this.errorMessage.set('Login failed. Please check your credentials and try again.');
-            }
         });
     }
 }

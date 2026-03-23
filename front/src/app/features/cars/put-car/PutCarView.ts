@@ -3,6 +3,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angu
 import { CarsApiService } from "../../../api/CarsApiService";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, RouterModule } from "@angular/router";
+import { NotificationService } from "../../../shared/services/NotificationService";
 
 @Component({
     selector: 'app-put-car',
@@ -21,7 +22,8 @@ export class PutCarView {
     constructor(
         private fb: FormBuilder,
         private carsApiService: CarsApiService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private notificationService: NotificationService
     ) {
         const id = this.route.snapshot.paramMap.get('id')!;
         this.createCarForm = this.fb.group({
@@ -41,6 +43,12 @@ export class PutCarView {
                     model: car.model,
                     year: car.year,
                     plate: car.plate,
+                });
+                this.notificationService.add({
+                    title: "Info",
+                    message: "Car fetched successfully for editing.",
+                    type: "info",
+                    duration: 5000,
                 });
             },
             error: (err) => {
@@ -68,6 +76,12 @@ export class PutCarView {
                     console.log('Car updated successfully:', response);
                     this.lastSuccessMessage.set(response);
                     this.errorMessage.set('');
+                    this.notificationService.add({
+                        title: "Success",
+                        message: "Car updated successfully",
+                        type: "success",
+                        duration: 5000,
+                    });
                 },
                 error: (err) => {
                     console.error('Error updating car:', err);

@@ -3,18 +3,34 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/c
 import { catchError, Observable } from 'rxjs';
 import { TokenStorageService } from '../../stores/TokenStorageService';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../shared/services/NotificationService';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    constructor(private tokenService: TokenStorageService, private router: Router) { }
+    constructor(private tokenService: TokenStorageService, private router: Router, private notificationService: NotificationService) { }
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const token = this.tokenService.getToken();
         if (token) {
             const cloned = this.addTokenHeader(req, token);
             return next.handle(cloned).pipe(
                 catchError((error) => {
-                    if (error.status === 401) {
-                        return this.handle401Error(req, next);
+                    switch (error.status) {
+                        case 401:
+                            return this.handle401Error(cloned, next);
+                        case 403:
+                            return this.handle403Error();
+                        case 404:
+                            return this.handle404Error();
+                        case 409:
+                            return this.handle409Error();
+                        default:
+                            console.error('HTTP error:', error);
+                            this.notificationService.add({
+                                title: "Error",
+                                message: "An unexpected error occurred.",
+                                type: "error",
+                                duration: 10000,
+                            });
                     }
                     throw error;
                 })
@@ -30,8 +46,44 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         this.tokenService.removeToken();
+        this.notificationService.add({
+            title: "Error",
+            message: "Session expired. Please log in again.",
+            type: "error",
+            duration: 10000,
+        });
         this.router.navigate(['/login']);
         return next.handle(request);
+    }
+    handle403Error(): Observable<HttpEvent<any>> {
+        this.notificationService.add({
+            title: "Error",
+            message: "You do not have permission to perform this action.",
+            type: "error",
+            duration: 10000,
+        });
+        this.router.navigate(['/forbidden']);
+        return new Observable<HttpEvent<any>>();
+    }
+    handle404Error(): Observable<HttpEvent<any>> {
+        this.notificationService.add({
+            title: "Error",
+            message: "The requested resource was not found.",
+            type: "error",
+            duration: 10000,
+        });
+        this.router.navigate(['/not-found']);
+        return new Observable<HttpEvent<any>>();
+    }
+    handle409Error(): Observable<HttpEvent<any>> {
+        this.notificationService.add({
+            title: "Error",
+            message: "Conflict occurred. Please check your request.",
+            type: "error",
+            duration: 10000,
+        });
+        this.router.navigate(['/conflict']);
+        return new Observable<HttpEvent<any>>();
     }
 }
 

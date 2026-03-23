@@ -3,6 +3,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angu
 import { CarsApiService } from "../../../api/CarsApiService";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
+import { NotificationService } from "../../../shared/services/NotificationService";
 
 @Component({
     selector: 'app-delete-car',
@@ -22,7 +23,8 @@ export class DeleteCarView {
         private fb: FormBuilder,
         private carsApiService: CarsApiService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private notificationService: NotificationService
     ) {
         const id = this.route.snapshot.paramMap.get('id')!;
         this.showCarForm = this.fb.group({
@@ -43,6 +45,12 @@ export class DeleteCarView {
                     year: car.year,
                     plate: car.plate,
                 });
+                this.notificationService.add({
+                    title: "Info",
+                    message: "Car fetched successfully for deleting.",
+                    type: "info",
+                    duration: 5000,
+                });
             },
             error: (err) => {
                 console.error('Error fetching car for deleting:', err);
@@ -60,6 +68,12 @@ export class DeleteCarView {
                     this.lastSuccessMessage.set(response);
                     this.errorMessage.set('');
                     this.router.navigate(['/cars']);
+                    this.notificationService.add({
+                        title: "Success",
+                        message: "Car deleted successfully",
+                        type: "success",
+                        duration: 5000,
+                    });
                 },
                 error: (err) => {
                     console.error('Error deleting car:', err);
