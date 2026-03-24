@@ -5,7 +5,7 @@ import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { PaginatedResponse } from "../../../types/PaginatedResponse";
 import { Car } from "../../../types/Car";
 import { TokenStorageService } from "../../../stores/TokenStorageService";
-import { RouterModule } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { SortRequest } from "../../../types/SortRequest";
 import { FilterRequest } from "../../../types/FilterRequest";
 
@@ -19,7 +19,7 @@ export class CarsView {
     errorMessage = signal('');
     carsPaginated = signal<PaginatedResponse<Car> | null>(null);
     currentPage = signal(0);
-    filterForm;
+    filterForm: any;
     filtersOpen = true;
 
     sortOptions = [
@@ -33,18 +33,26 @@ export class CarsView {
     constructor(
         private fb: FormBuilder,
         private carsApiService: CarsApiService,
-        private tokenStorageService: TokenStorageService
+        private tokenStorageService: TokenStorageService,
+        private route: ActivatedRoute,
+        private router: Router
     ) {
-        this.filterForm = this.fb.group({
-            brand: [''],
-            model: [''],
-            plate: [''],
-            yearFrom: [null as number | null],
-            yearTo: [null as number | null],
-            sortBy: [''],
-            asc: [true],
+        this.route.queryParamMap.subscribe(params => {
+            this.initializeFilterForm(params);
+            this.loadCars(params.get('page') ? Number(params.get('page')) : 0);
         });
-        this.loadCars();
+    }
+
+    private initializeFilterForm(params: any) {
+        this.filterForm = this.fb.group({
+            brand: [params.get('brand') || ''],
+            model: [params.get('model') || ''],
+            plate: [params.get('plate') || ''],
+            yearFrom: [params.get('yearFrom') || null as number | null],
+            yearTo: [params.get('yearTo') || null as number | null],
+            sortBy: [params.get('sortBy') || ''],
+            asc: [params.get('asc') === 'false' ? false : true],
+        });
     }
     setSortBy(value: string) {
         this.filterForm.patchValue({ sortBy: value });
@@ -56,11 +64,21 @@ export class CarsView {
     }
 
     loadCars(page: number = 0) {
+        const params = Object.fromEntries(
+            Object.entries({ page, ...this.filterForm.value })
+                .filter(([_, v]) => v !== null && v !== '' && v !== undefined)
+        );
+
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: params,
+            replaceUrl: true,
+        });
+
         if (!this.tokenStorageService.getToken()) {
             this.errorMessage.set('Please enter a token to fetch cars.');
             return;
         }
-
         const { brand, model, plate, yearFrom, yearTo, sortBy, asc } = this.filterForm.value;
 
         const filterRequest = {
