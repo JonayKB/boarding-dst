@@ -60,7 +60,14 @@
 
 
         <h3>Are you sure you want to delete this car?</h3>
-        <button type="submit" *ngIf="!lastSuccessMessage()">Yes</button>
+        <button type="submit" [disabled]="loading()">
+            @if (loading()) {
+            <app-spinner size="sm" />
+            Deleting...
+            } @else {
+            Yes, delete
+            }
+        </button>
         <button type="button" (click)="cancelDelete()" *ngIf="!lastSuccessMessage()">No</button>
     </form>
 </div>

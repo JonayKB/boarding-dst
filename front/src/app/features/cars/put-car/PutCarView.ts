@@ -4,18 +4,20 @@ import { CarsApiService } from "../../../api/CarsApiService";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { NotificationService } from "../../../shared/services/NotificationService";
+import { Spinner } from "../../../shared/spinner/Spinner";
 
 @Component({
     selector: 'app-put-car',
     templateUrl: './put-car-view.html',
     styleUrl: './put-car-view.css',
-    imports: [FormsModule, ReactiveFormsModule, CommonModule, RouterModule]
+    imports: [FormsModule, ReactiveFormsModule, CommonModule, RouterModule, Spinner]
 })
 export class PutCarView {
     errorMessage = signal('');
     lastSuccessMessage = signal('');
     currentYear = new Date().getFullYear();
     createCarForm;
+    loading = signal(false);
 
 
 
@@ -60,6 +62,7 @@ export class PutCarView {
 
     updateCar() {
         if (this.createCarForm.valid) {
+            this.loading.set(true);
             const { brand, model, year, plate } = this.createCarForm.value;
             const saveCarData = {
                 brand: brand!,
@@ -76,6 +79,7 @@ export class PutCarView {
                     console.log('Car updated successfully:', response);
                     this.lastSuccessMessage.set(response);
                     this.errorMessage.set('');
+                    this.loading.set(false);
                     this.notificationService.add({
                         title: "Success",
                         message: "Car updated successfully",
@@ -86,6 +90,7 @@ export class PutCarView {
                 error: (err) => {
                     console.error('Error updating car:', err);
                     this.errorMessage.set('Failed to update car.');
+                    this.loading.set(false);
                 }
             });
         } else {

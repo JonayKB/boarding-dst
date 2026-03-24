@@ -8,6 +8,13 @@
         <label for="password">Password:</label>
         <input id="password" type="password" [(ngModel)]="password" name="password" required>
         <br>
-        <button type="submit">Login</button>
+        <button type="submit" [disabled]="loading() ">
+            @if (loading()) {
+            <app-spinner size="sm" />
+            Login in...
+            } @else {
+            Login
+            }
+        </button>
     </form>
 </div>

@@ -1,0 +1,48 @@
+:host { display: inline-flex; }
+
+.spinner-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ── Sizes ──────────────────────────────────────────────────── */
+.spinner--sm .spinner-ring { width: 14px; height: 14px; }
+.spinner--md .spinner-ring { width: 20px; height: 20px; }
+.spinner--lg .spinner-ring { width: 32px; height: 32px; }
+
+.spinner--sm .spinner-label { font-size: var(--text-xs); }
+.spinner--md .spinner-label { font-size: var(--text-sm); }
+.spinner--lg .spinner-label { font-size: var(--text-base); }
+
+/* ── Ring ───────────────────────────────────────────────────── */
+.spinner-ring {
+  flex-shrink: 0;
+  animation: spinner-rotate 0.9s linear infinite;
+}
+
+.spinner-ring svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.spinner-track {
+  stroke: var(--clr-border);
+}
+
+.spinner-arc {
+  stroke: var(--clr-accent);
+  transform-origin: center;
+}
+
+/* ── Label ──────────────────────────────────────────────────── */
+.spinner-label {
+  color: var(--clr-text-2);
+  font-weight: var(--weight-medium);
+}
+
+/* ── Animation ──────────────────────────────────────────────── */
+@keyframes spinner-rotate {
+  to { transform: rotate(360deg); }
+}

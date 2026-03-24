@@ -56,6 +56,13 @@
             {{lastSuccessMessage()}}
         </p>
 
-        <button type="submit">Create Car</button>
+        <button type="submit" [disabled]="createCarForm.invalid || loading()">
+            @if (loading()) {
+            <app-spinner size="sm" />
+            Creating...
+            } @else {
+            Create Car
+            }
+        </button>
     </form>
 </div>

@@ -58,7 +58,14 @@
         <p *ngIf="errorMessage()" class="error">{{ errorMessage() }}</p>
         <p *ngIf="lastSuccessMessage()">{{ lastSuccessMessage() }}</p>
 
-        <button type="submit">Update Car</button>
+        <button type="submit" [disabled]="createCarForm.invalid || loading()">
+            @if (loading()) {
+            <app-spinner size="sm" />
+            Updating...
+            } @else {
+            Update Car
+            }
+        </button>
         <a [routerLink]="['/cars/' + createCarForm.get('carId')?.value]" >Back to Car Details</a>
     </form>
 </div>

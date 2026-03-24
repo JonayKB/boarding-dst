@@ -3,18 +3,20 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angu
 import { CarsApiService } from "../../../api/CarsApiService";
 import { CommonModule } from "@angular/common";
 import { NotificationService } from "../../../shared/services/NotificationService";
+import { Spinner } from "../../../shared/spinner/Spinner";
 
 @Component({
     selector: 'app-add-car',
     templateUrl: './add-car-view.html',
     styleUrl: './add-car-view.css',
-    imports: [FormsModule, ReactiveFormsModule, CommonModule]
+    imports: [FormsModule, ReactiveFormsModule, CommonModule, Spinner]
 })
 export class AddCarView {
     createCarForm;
     errorMessage = signal('');
     lastSuccessMessage = signal('');
     currentYear = new Date().getFullYear();
+    loading = signal(false);
 
     constructor(private fb: FormBuilder, private carsApiService: CarsApiService, private notificationService: NotificationService) {
         this.createCarForm = this.fb.group({
@@ -30,6 +32,8 @@ export class AddCarView {
 
     createCar() {
         if (this.createCarForm.valid) {
+            this.loading.set(true);
+
             const { brand, model, year, plate } = this.createCarForm.value;
             const saveCarData = {
                 brand: brand!,
@@ -49,10 +53,12 @@ export class AddCarView {
                         type: "success",
                         duration: 5000,
                     });
+                    this.loading.set(false);
                 },
                 error: (err) => {
                     console.error('Error saving car:', err);
                     this.errorMessage.set('Failed to save car.');
+                    this.loading.set(false);
                 }
             });
         } else {

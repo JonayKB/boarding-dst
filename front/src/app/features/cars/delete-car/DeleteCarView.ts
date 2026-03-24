@@ -4,18 +4,20 @@ import { CarsApiService } from "../../../api/CarsApiService";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "../../../shared/services/NotificationService";
+import { Spinner } from "../../../shared/spinner/Spinner";
 
 @Component({
     selector: 'app-delete-car',
     templateUrl: './delete-car-view.html',
     styleUrl: './delete-car-view.css',
-    imports: [FormsModule, ReactiveFormsModule, CommonModule]
+    imports: [FormsModule, ReactiveFormsModule, CommonModule, Spinner]
 })
 export class DeleteCarView {
     errorMessage = signal('');
     lastSuccessMessage = signal('');
     currentYear = new Date().getFullYear();
     showCarForm;
+    loading = signal(false);
 
 
 
@@ -60,6 +62,7 @@ export class DeleteCarView {
     }
 
     deleteCar() {
+        this.loading.set(true);
         const carId = this.route.snapshot.paramMap.get('id');
         if (carId) {
             this.carsApiService.deleteCar(carId).subscribe({
@@ -68,6 +71,7 @@ export class DeleteCarView {
                     this.lastSuccessMessage.set(response);
                     this.errorMessage.set('');
                     this.router.navigate(['/cars']);
+                    this.loading.set(false);
                     this.notificationService.add({
                         title: "Success",
                         message: "Car deleted successfully",
@@ -78,6 +82,7 @@ export class DeleteCarView {
                 error: (err) => {
                     console.error('Error deleting car:', err);
                     this.errorMessage.set('Failed to delete car.');
+                    this.loading.set(false);
                 }
             });
         }
