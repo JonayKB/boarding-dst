@@ -35,8 +35,7 @@ export class CarsApiService {
             catchError((error) => {
                 console.error('Failed to fetch cars:', error);
                 this.notificationService.add({
-                    title: "Error",
-                    message: "Failed to fetch cars",
+                    title: "Failed to fetch cars",
                     type: "error",
                     duration: 10000,
                 });
@@ -51,8 +50,7 @@ export class CarsApiService {
             catchError((error) => {
                 console.error('Failed to save car:', error);
                 this.notificationService.add({
-                    title: "Error",
-                    message: "Failed to save car",
+                    title: "Failed to save car",
                     type: "error",
                     duration: 10000,
                 });
@@ -66,8 +64,7 @@ export class CarsApiService {
             catchError((error) => {
                 console.error(`Failed to fetch car with id ${id}:`, error);
                 this.notificationService.add({
-                    title: "Error",
-                    message: `Failed to fetch car with id ${id}`,
+                    title: `Failed to fetch car with id ${id}`,
                     type: "error",
                     duration: 10000,
                 });
@@ -81,8 +78,7 @@ export class CarsApiService {
             catchError((error) => {
                 console.error(`Failed to update car with id ${id}:`, error);
                 this.notificationService.add({
-                    title: "Error",
-                    message: `Failed to update car with id ${id}`,
+                    title: `Failed to update car with id ${id}`,
                     type: "error",
                     duration: 10000,
                 });
@@ -96,8 +92,7 @@ export class CarsApiService {
             catchError((error) => {
                 console.error(`Failed to delete car with id ${id}:`, error);
                 this.notificationService.add({
-                    title: "Error",
-                    message: `Failed to delete car with id ${id}`,
+                    title: `Failed to delete car with id ${id}`,
                     type: "error",
                     duration: 10000,
                 });

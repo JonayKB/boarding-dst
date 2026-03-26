@@ -4,12 +4,13 @@ import { CarsApiService } from "../../../api/CarsApiService";
 import { CommonModule } from "@angular/common";
 import { NotificationService } from "../../../shared/services/NotificationService";
 import { Spinner } from "../../../shared/spinner/Spinner";
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 @Component({
     selector: 'app-add-car',
     templateUrl: './add-car-view.html',
     styleUrl: './add-car-view.css',
-    imports: [FormsModule, ReactiveFormsModule, CommonModule, Spinner]
+    imports: [FormsModule, ReactiveFormsModule, CommonModule, Spinner, MatFormFieldModule, MatInputModule],
 })
 export class AddCarView {
     createCarForm;
@@ -48,8 +49,7 @@ export class AddCarView {
                     this.createCarForm.reset();
                     this.lastSuccessMessage.set(response);
                     this.notificationService.add({
-                        title: "Success",
-                        message: "Car saved successfully",
+                        title: "Car saved successfully",
                         type: "success",
                         duration: 5000,
                     });

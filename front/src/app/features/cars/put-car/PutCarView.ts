@@ -47,8 +47,7 @@ export class PutCarView {
                     plate: car.plate,
                 });
                 this.notificationService.add({
-                    title: "Info",
-                    message: "Car fetched successfully for editing.",
+                    title: "Car fetched successfully for editing.",
                     type: "info",
                     duration: 5000,
                 });
@@ -81,8 +80,7 @@ export class PutCarView {
                     this.errorMessage.set('');
                     this.loading.set(false);
                     this.notificationService.add({
-                        title: "Success",
-                        message: "Car updated successfully",
+                        title: "Car updated successfully",
                         type: "success",
                         duration: 5000,
                     });

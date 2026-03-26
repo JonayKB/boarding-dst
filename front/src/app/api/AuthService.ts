@@ -17,8 +17,7 @@ export class AuthService {
             catchError((error) => {
                 console.error('Failed to login:', error);
                 this.notificationService.add({
-                    title: "Error",
-                    message: "Failed to login",
+                    title: "Failed to login",
                     type: "error",
                     duration: 10000,
                 });

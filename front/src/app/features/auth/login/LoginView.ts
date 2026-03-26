@@ -6,12 +6,13 @@ import { FormsModule } from "@angular/forms";
 import { AuthStateService } from "../../../shared/services/AuthStateService";
 import { NotificationService } from "../../../shared/services/NotificationService";
 import { Spinner } from "../../../shared/spinner/Spinner";
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 @Component({
     selector: 'app-login',
     templateUrl: './login-view.html',
     styleUrl: './login-view.css',
-    imports: [FormsModule, CommonModule, Spinner]
+    imports: [FormsModule, CommonModule, Spinner, MatFormFieldModule, MatInputModule]
 })
 export class LoginView {
     email = '';
@@ -30,8 +31,7 @@ export class LoginView {
                 this.loading.set(false);
                 this.router.navigate(['/cars']);
                 this.notificationService.add({
-                    title: "Success",
-                    message: "Logged in successfully",
+                    title: "Logged in successfully",
                     type: "success",
                     duration: 5000,
                 });

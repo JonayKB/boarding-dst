@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Confirm Deletion</h2>
+<mat-dialog-content>
+    <p>Are you sure you want to delete this car?</p>
+    <p>This action cannot be undone.</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>No</button>
+    <button mat-raised-button color="danger" (click)="onConfirm()">Yes, Delete</button>
+</mat-dialog-actions>

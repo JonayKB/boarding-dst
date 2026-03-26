@@ -26,8 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
                         default:
                             console.error('HTTP error:', error);
                             this.notificationService.add({
-                                title: "Error",
-                                message: "An unexpected error occurred.",
+                                title: "An unexpected error occurred.",
                                 type: "error",
                                 duration: 10000,
                             });
@@ -47,8 +46,7 @@ export class AuthInterceptor implements HttpInterceptor {
     handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         this.tokenService.removeToken();
         this.notificationService.add({
-            title: "Error",
-            message: "Session expired. Please log in again.",
+            title: "Session expired. Please log in again.",
             type: "error",
             duration: 10000,
         });
@@ -57,8 +55,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     handle403Error(): Observable<HttpEvent<any>> {
         this.notificationService.add({
-            title: "Error",
-            message: "You do not have permission to perform this action.",
+            title: "You do not have permission to perform this action.",
             type: "error",
             duration: 10000,
         });
@@ -67,8 +64,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     handle404Error(): Observable<HttpEvent<any>> {
         this.notificationService.add({
-            title: "Error",
-            message: "The requested resource was not found.",
+            title: "The requested resource was not found.",
             type: "error",
             duration: 10000,
         });
@@ -77,8 +73,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     handle409Error(): Observable<HttpEvent<any>> {
         this.notificationService.add({
-            title: "Error",
-            message: "Conflict occurred. Please check your request.",
+            title: "Conflict occurred. Please check your request.",
             type: "error",
             duration: 10000,
         });

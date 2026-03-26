@@ -17,32 +17,36 @@ export const routes: Routes = [
     },
     {
         path: 'cars',
-        component: CarsView,
-        canActivate: [isAuthenticated()]
+        canActivate: [isAuthenticated()],
+        children: [
+            {
+                path: '',
+                component: CarsView,
+            },
+            {
+                path: 'add',
+                component: AddCarView,
+                canActivate: [requiredRole('ROLE_ADMIN')]
+            },
+            {
+                path: ':id',
+                component: GetCarView,
+                canActivate: [isAuthenticated()]
+            },
+            {
+                path: ':id/edit',
+                component: PutCarView,
+                canActivate: [isAuthenticated(), requiredRole('ROLE_ADMIN')]
+            },
+            {
+                path: ':id/delete',
+                component: DeleteCarView,
+                canActivate: [isAuthenticated(), requiredRole('ROLE_ADMIN')]
+            }]
     },
     {
         path: 'forbidden',
         component: ForbiddenView
-    },
-    {
-        path: 'cars/add',
-        component: AddCarView,
-        canActivate: [isAuthenticated(), requiredRole('ROLE_ADMIN')]
-    },
-    {
-        path: 'cars/:id',
-        component: GetCarView,
-        canActivate: [isAuthenticated()]
-    },
-    {
-        path: 'cars/:id/edit',
-        component: PutCarView,
-        canActivate: [isAuthenticated(), requiredRole('ROLE_ADMIN')]
-    },
-    {
-        path: 'cars/:id/delete',
-        component: DeleteCarView,
-        canActivate: [isAuthenticated(), requiredRole('ROLE_ADMIN')]
     },
     {
         path: 'login',

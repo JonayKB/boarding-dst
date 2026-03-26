@@ -1,54 +1,54 @@
 <div>
     <form [formGroup]="createCarForm" (ngSubmit)="createCar()">
 
-        <div>
-            <label for="brand">Brand:</label>
-            <input id="brand" type="text" formControlName="brand" />
-            @if (createCarForm.get('brand')?.invalid && createCarForm.get('brand')?.touched) {
-            @if (createCarForm.get('brand')?.hasError('required')) {
-            <p class="error">Brand is required.</p>
-            }
-            }
-        </div>
+        <mat-form-field appearance="fill">
+            <mat-label>Brand</mat-label>
+            <input matInput formControlName="brand" />
+            <mat-error *ngIf="createCarForm.get('brand')?.invalid && createCarForm.get('brand')?.touched">
+                @if (createCarForm.get('brand')?.hasError('required')) {
+                Brand is required.
+                }
+            </mat-error>
+        </mat-form-field>
 
-        <div>
-            <label for="model">Model:</label>
-            <input id="model" type="text" formControlName="model" />
-            @if (createCarForm.get('model')?.invalid && createCarForm.get('model')?.touched) {
-            @if (createCarForm.get('model')?.hasError('required')) {
-            <p class="error">Model is required.</p>
-            }
-            }
-        </div>
+        <mat-form-field appearance="fill">
+            <mat-label>Model</mat-label>
+            <input matInput formControlName="model" />
+            <mat-error *ngIf="createCarForm.get('model')?.invalid && createCarForm.get('model')?.touched">
+                @if (createCarForm.get('model')?.hasError('required')) {
+                Model is required.
+                }
+            </mat-error>
+        </mat-form-field>
 
-        <div>
-            <label for="plate">Plate:</label>
-            <input id="plate" type="text" formControlName="plate" />
-            @if (createCarForm.get('plate')?.invalid && createCarForm.get('plate')?.touched) {
-            @if (createCarForm.get('plate')?.hasError('required')) {
-            <p class="error">Plate is required.</p>
-            }
-            @if (createCarForm.get('plate')?.hasError('pattern')) {
-            <p class="error">Plate format must be ABC1234.</p>
-            }
-            }
-        </div>
+        <mat-form-field appearance="fill">
+            <mat-label>Plate</mat-label>
+            <input matInput formControlName="plate" />
+            <mat-error *ngIf="createCarForm.get('plate')?.invalid && createCarForm.get('plate')?.touched">
+                @if (createCarForm.get('plate')?.hasError('required')) {
+                Plate is required.
+                }
+                @if (createCarForm.get('plate')?.hasError('pattern')) {
+                Plate format must be ABC1234.
+                }
+            </mat-error>
+        </mat-form-field>
 
-        <div>
-            <label for="year">Year:</label>
-            <input id="year" type="number" formControlName="year" />
-            @if (createCarForm.get('year')?.invalid && createCarForm.get('year')?.touched) {
-            @if (createCarForm.get('year')?.hasError('required')) {
-            <p class="error">Year is required.</p>
-            }
-            @if (createCarForm.get('year')?.hasError('min')) {
-            <p class="error">Year must be 1886 or later.</p>
-            }
-            @if (createCarForm.get('year')?.hasError('max')) {
-            <p class="error">Year cannot exceed {{ currentYear }}.</p>
-            }
-            }
-        </div>
+        <mat-form-field appearance="fill">
+            <mat-label>Year</mat-label>
+            <input matInput formControlName="year" type="number" />
+            <mat-error *ngIf="createCarForm.get('year')?.invalid && createCarForm.get('year')?.touched">
+                @if (createCarForm.get('year')?.hasError('required')) {
+                Year is required.
+                }
+                @if (createCarForm.get('year')?.hasError('min')) {
+                Year must be 1886 or later.
+                }
+                @if (createCarForm.get('year')?.hasError('max')) {
+                Year cannot exceed {{ currentYear }}.
+                }
+            </mat-error>
+        </mat-form-field>
 
         <p *ngIf="errorMessage()" class="error">{{ errorMessage() }}</p>
 

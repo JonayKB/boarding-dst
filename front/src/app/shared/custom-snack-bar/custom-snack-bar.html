@@ -1,0 +1,8 @@
+<span matSnackBarLabel class="snackbar-message snackbar-message--{{ snack.type }}">
+    {{ snack.title }}
+</span>
+<span matSnackBarActions *ngIf="snack.action">
+    <button matSnackBarAction (click)="snackBarRef.dismissWithAction()">
+        {{ snack.action }}
+    </button>
+</span>

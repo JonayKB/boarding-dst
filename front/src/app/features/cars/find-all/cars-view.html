@@ -44,25 +44,31 @@
             <form [formGroup]="filterForm" (ngSubmit)="loadCars()">
 
                 <div class="filter-grid">
-                    <div class="field">
-                        <label for="brand">Brand</label>
-                        <input id="brand" type="text" formControlName="brand" placeholder="e.g. Toyota" />
-                    </div>
-                    <div class="field">
-                        <label for="model">Model</label>
-                        <input id="model" type="text" formControlName="model" placeholder="e.g. Corolla" />
-                    </div>
-                    <div class="field">
-                        <label for="plate">Plate</label>
-                        <input id="plate" type="text" formControlName="plate" placeholder="ABC1234" />
-                    </div>
-                    <div class="field">
-                        <label>Year range</label>
-                        <div class="year-range">
-                            <input type="number" formControlName="yearFrom" placeholder="From" />
-                            <span class="year-sep">—</span>
-                            <input type="number" formControlName="yearTo" placeholder="To" />
-                        </div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Brand</mat-label>
+                        <input matInput formControlName="brand" placeholder="e.g. Toyota">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Model</mat-label>
+                        <input matInput formControlName="model" placeholder="e.g. Corolla">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Plate</mat-label>
+                        <input matInput formControlName="plate" placeholder="e.g. ABC-1234">
+                    </mat-form-field>
+
+                    <div class="year-range">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Year from</mat-label>
+                            <input matInput type="number" formControlName="yearFrom" placeholder="e.g. 2010">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill">
+                            <mat-label>Year to</mat-label>
+                            <input matInput type="number" formControlName="yearTo" placeholder="e.g. 2020">
+                        </mat-form-field>
                     </div>
                 </div>
 
@@ -100,32 +106,51 @@
     <p class="error">{{ errorMessage() }}</p>
     }
 
-    @if (carsPaginated()) {
-    <ul class="car-list">
-        @for (car of carsPaginated()!.content; track car.id) {
-        <li>
-            <a class="car-item" [routerLink]="['/cars', car.id]">
-                <span class="car-dot"></span>
-                <span class="car-name">{{ car.brand }} {{ car.model }}</span>
-                <span class="car-plate">{{ car.plate }}</span>
-                <span class="car-year">{{ car.year }}</span>
-                <span class="car-arrow">→</span>
-            </a>
-        </li>
-        }
-    </ul>
 
-    <div class="pagination">
-        <span class="pag-info">
-            Showing {{ carsPaginated()!.content.length }} of {{ carsPaginated()!.totalElements }}
-        </span>
-        <div class="pag-controls">
-            <button class="pag-btn" (click)="prevPage()" [disabled]="currentPage() === 0">← Prev</button>
-            <span class="pag-page">Page {{ currentPage() + 1 }} of {{ carsPaginated()!.totalPages }}</span>
-            <button class="pag-btn" (click)="nextPage()"
-                [disabled]="currentPage() + 1 >= carsPaginated()!.totalPages">Next →</button>
-        </div>
-    </div>
+    @if (carsPaginated()) {
+    <table mat-table [dataSource]="carsPaginated()!.content" class="mat-elevation-z8">
+
+        <!-- Brand Column -->
+        <ng-container matColumnDef="brand">
+            <th mat-header-cell *matHeaderCellDef> Brand </th>
+            <td mat-cell *matCellDef="let car"> {{car.brand}} </td>
+        </ng-container>
+
+        <!-- Model Column -->
+        <ng-container matColumnDef="model">
+            <th mat-header-cell *matHeaderCellDef> Model </th>
+            <td mat-cell *matCellDef="let car"> {{car.model}} </td>
+        </ng-container>
+
+        <!-- Plate Column -->
+        <ng-container matColumnDef="plate">
+            <th mat-header-cell *matHeaderCellDef> Plate </th>
+            <td mat-cell *matCellDef="let car"> {{car.plate}} </td>
+        </ng-container>
+
+        <!-- Year Column -->
+        <ng-container matColumnDef="year">
+            <th mat-header-cell *matHeaderCellDef> Year </th>
+            <td mat-cell *matCellDef="let car"> {{car.year}} </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let car">
+                <mat-icon class="details-link" (click)="viewCar(car.id)">visibility</mat-icon>
+                <mat-icon class="details-link" (click)="editCar(car.id)">edit</mat-icon>
+                <mat-icon class="details-link" (click)="deleteCar(car.id)">delete</mat-icon>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [length]="carsPaginated()!.totalElements" [pageSize]="5" (page)="loadCars($event.pageIndex)">
+    </mat-paginator>
     }
+
+
 
 </div>

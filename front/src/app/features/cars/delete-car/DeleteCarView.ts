@@ -5,12 +5,14 @@ import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotificationService } from "../../../shared/services/NotificationService";
 import { Spinner } from "../../../shared/spinner/Spinner";
-
+import { MatDialogModule } from '@angular/material/dialog';
+import { DeleteDialog } from "../../../shared/delete-dialog/DeteteDialog";
+import { MatDialog } from "@angular/material/dialog";
 @Component({
     selector: 'app-delete-car',
     templateUrl: './delete-car-view.html',
     styleUrl: './delete-car-view.css',
-    imports: [FormsModule, ReactiveFormsModule, CommonModule, Spinner]
+    imports: [FormsModule, ReactiveFormsModule, CommonModule, Spinner, MatDialogModule]
 })
 export class DeleteCarView {
     errorMessage = signal('');
@@ -26,7 +28,8 @@ export class DeleteCarView {
         private carsApiService: CarsApiService,
         private route: ActivatedRoute,
         private router: Router,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private dialog: MatDialog
     ) {
         const id = this.route.snapshot.paramMap.get('id')!;
         this.showCarForm = this.fb.group({
@@ -48,8 +51,7 @@ export class DeleteCarView {
                     plate: car.plate,
                 });
                 this.notificationService.add({
-                    title: "Info",
-                    message: "Car fetched successfully for deleting.",
+                    title: "Car fetched successfully for deleting.",
                     type: "info",
                     duration: 5000,
                 });
@@ -63,7 +65,19 @@ export class DeleteCarView {
 
     deleteCar() {
         this.loading.set(true);
+        const dialogRef = this.dialog.open(DeleteDialog, {
+            width: '400px',
+            data: { onConfirm: () => this.confirmDelete(dialogRef) }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            this.loading.set(false);
+        });
+    }
+
+    confirmDelete(dialogRef?: any) {
         const carId = this.route.snapshot.paramMap.get('id');
+        dialogRef?.close();
         if (carId) {
             this.carsApiService.deleteCar(carId).subscribe({
                 next: (response) => {
@@ -73,8 +87,7 @@ export class DeleteCarView {
                     this.router.navigate(['/cars']);
                     this.loading.set(false);
                     this.notificationService.add({
-                        title: "Success",
-                        message: "Car deleted successfully",
+                        title: "Car deleted successfully",
                         type: "success",
                         duration: 5000,
                     });

@@ -8,12 +8,16 @@ import { TokenStorageService } from "../../../stores/TokenStorageService";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { SortRequest } from "../../../types/SortRequest";
 import { FilterRequest } from "../../../types/FilterRequest";
-
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatIconModule} from '@angular/material/icon';
 @Component({
     selector: 'app-cars-view',
     templateUrl: './cars-view.html',
     styleUrl: './cars-view.css',
-    imports: [CommonModule, ReactiveFormsModule, RouterModule]
+    imports: [CommonModule, ReactiveFormsModule, RouterModule,MatTableModule, MatPaginatorModule, MatFormFieldModule, MatInputModule, MatIconModule]
 })
 export class CarsView {
     errorMessage = signal('');
@@ -21,6 +25,7 @@ export class CarsView {
     currentPage = signal(0);
     filterForm: any;
     filtersOpen = true;
+    displayedColumns: string[] = ['brand', 'model', 'year', 'plate', 'actions'];
 
     sortOptions = [
         { label: 'Brand', value: 'brand' },
@@ -121,5 +126,17 @@ export class CarsView {
     resetFilters() {
         this.filterForm.reset({ asc: true });
         this.loadCars(0);
+    }
+
+    viewCar(id: number) {
+        this.router.navigate(['/cars', id],{queryParamsHandling:'replace'});
+    }
+
+    editCar(id: number) {
+        this.router.navigate(['/cars', id, 'edit'],{queryParamsHandling:'replace'});
+    }
+
+    deleteCar(id: number) {
+        this.router.navigate(['/cars', id, 'delete'],{queryParamsHandling:'replace'});
     }
 }

@@ -1,20 +1,27 @@
 import { Injectable, signal } from '@angular/core';
-import { Toast } from '../../types/Toast';
+import { Snack } from '../../types/Snack';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CustomSnackBarComponent } from '../custom-snack-bar/CustonSnackBar';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
-  toasts = signal<Toast[]>([]);
+  snacks = signal<Snack[]>([]);
+  constructor(private snackBar: MatSnackBar) { }
 
-  add(toast: Toast) {
-    this.toasts.update(t => [...t, toast]);
-
-    const duration = toast.duration ?? 3500;
-    setTimeout(() => {
-      this.toasts.update(t => t.filter(t2 => t2 !== toast));
-    }, duration);
+  add(snack: Snack) {
+    if (!snack.action) {
+      snack.action = 'Close';
+    }
+    this.snacks.update((current) => [...current, snack]);
+    this.snackBar.openFromComponent(CustomSnackBarComponent, {
+      data: snack,
+      duration: snack.duration ?? 3500,
+      panelClass: `snack-${snack.type || 'info'}`,
+    });
   }
 
   remove(index: number) {
-    this.toasts.update(t => t.filter((_, i) => i !== index));
+    this.snacks.update((current) => current.filter((_, i) => i !== index));
+    this.snackBar.dismiss();
   }
 }

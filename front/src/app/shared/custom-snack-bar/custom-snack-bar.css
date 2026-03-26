@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  align-items: center;
+}
+
+.snackbar-message {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.snackbar-message--success {
+  color: var(--clr-success);
+}
+
+.snackbar-message--error {
+  color: var(--clr-error);
+}
+
+.snackbar-message--info {
+  color: var(--clr-accent);
+}
+
+.snackbar-message--warning {
+  color: var(--clr-warning);
+}
+
+.snackbar-message--default {
+  color: var(--clr-text);
+}
