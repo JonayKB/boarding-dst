@@ -51,7 +51,7 @@ export class AuthInterceptor implements HttpInterceptor {
             duration: 10000,
         });
         this.router.navigate(['/login']);
-        return next.handle(request);
+        return new Observable<HttpEvent<any>>();
     }
     handle403Error(): Observable<HttpEvent<any>> {
         this.notificationService.add({
