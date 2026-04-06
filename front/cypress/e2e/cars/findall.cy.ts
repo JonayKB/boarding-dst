@@ -1,9 +1,9 @@
-describe('Cars', () => {
+describe('FindAll Cars', () => {
     beforeEach(() => {
-        cy.login();
+        cy.login(["ROLE_USER"]);
         cy.mockCars();
-    });
 
+    });
     it('should show cars list', () => {
         cy.visit('/cars');
         cy.wait('@getCars');
@@ -61,5 +61,16 @@ describe('Cars', () => {
         cy.get('app-get-car > :nth-child(1) > div > :nth-child(4)').should('contain', 'Model:', 'Model 1');
         cy.get('app-get-car > :nth-child(1) > div > :nth-child(5)').should('contain', 'Year:', '2020');
         cy.get('app-get-car > :nth-child(1) > div > :nth-child(6)').should('contain', 'Plate:', 'ABC1234');
+    });
+
+    it('should show error notification when failing to load cars', () => {
+        cy.intercept('GET', '**/v1/cars/**', {
+            statusCode: 500,
+            body: { message: 'Internal Server Error' }
+        }).as('getCarsError');
+
+        cy.visit('/cars');
+        cy.wait('@getCarsError');
+        cy.get('app-custom-snack-bar > .mat-mdc-snack-bar-label').should('contain', 'Failed to fetch cars');
     });
 });

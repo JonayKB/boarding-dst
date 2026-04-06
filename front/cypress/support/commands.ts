@@ -70,3 +70,30 @@ Cypress.Commands.add('mockCarsPagination', (totalElements: number, pageSize: num
         });
     }).as('getCars');
 });
+
+Cypress.Commands.add('saveCar', () => {
+    cy.intercept('POST', '**/v1/cars', (req) => {
+        req.reply({
+            statusCode: 200,
+            body: "Car saved successfully"
+        });
+    }).as('saveCar');
+});
+
+Cypress.Commands.add('editCar', (id: string) => {
+    cy.intercept('PUT', `**/v1/cars/${id}`, (req) => {
+        req.reply({
+            statusCode: 200,
+            body: "Car updated successfully"
+        });
+    }).as('editCar');
+});
+
+Cypress.Commands.add('deleteCar', (id: string) => {
+    cy.intercept('DELETE', `**/v1/cars/${id}`, (req) => {
+        req.reply({
+            statusCode: 200,
+            body: "Car deleted successfully"
+        });
+    }).as('deleteCar');
+});
