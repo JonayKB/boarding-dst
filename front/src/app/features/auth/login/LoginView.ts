@@ -29,12 +29,13 @@ export class LoginView {
                 this.errorMessage.set('');
                 this.authState.setToken(token);
                 this.loading.set(false);
-                this.router.navigate(['/cars']);
                 this.notificationService.add({
                     title: "Logged in successfully",
                     type: "success",
                     duration: 5000,
                 });
+                this.router.navigate(['/cars']);
+
             },
             error: (err) => {
                 this.errorMessage.set('Invalid email or password');
